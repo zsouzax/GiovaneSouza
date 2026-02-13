@@ -1,0 +1,3480 @@
+/* ESCONDER BARRA DE SCROLL NO CHROME, SAFARI E EDGE */
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+      background: transparent;
+    }
+
+    /* =========================
+       ANIMAÇÃO DE SUBIDA DOS ELEMENTOS
+    ========================== */
+    .lift-element {
+      will-change: transform;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* VÍDEO PRETO DE FUNDO - FIXO E VISÍVEL */
+    .background-black {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+      transition: opacity 1s ease-in-out;
+    }
+
+    /* VÍDEO BRANCO DE FUNDO PARA TRANSICAO DO CARROSSEL */
+    .background-white {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    /* NOVO: FUNDO CREME PARA O STACKS */
+    .background-creme {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #C9C9C9; /* COR CREME SOLIDA */
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    /* NOVO: FUNDO GRADIENTE PARA O CONTAINER FINAL - ALTERADO PARA VERTICAL */
+    .background-gradient {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to bottom, #F4F4ED 0%, #FF0035 100%); /* ALTERADO: vertical */
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    /* STAGE - FIXO PARA MANTER O CONTEÚDO CENTRALIZADO DURANTE O SCROLL */
+    .stage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+      pointer-events: none;
+      will-change: transform;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    /* RATIO BOX - O CONTAINER QUE SOFRE O ZOOM OUT E CROP VERTICAL */
+    .ratio-box {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      max-width: 100vw;
+      max-height: 100vh;
+      overflow: hidden;
+      background: transparent;
+      will-change: transform, width, height;
+      pointer-events: auto;
+      /* Somente sombra, sem bordas arredondadas */
+      box-shadow: 0 0 50px rgba(0,0,0,0.5);
+      border-radius: 0 !important;
+      /* Aspect ratio inicial 16:9 */
+      aspect-ratio: 16/9;
+    }
+
+    /* VÍDEO BRANCO EXISTENTE */
+    video:not(.background-black):not(.background-white) {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0.1;
+      pointer-events: none;
+    }
+
+    /* Nova imagem MyPicture.png - COM SATURAÇÃO DINÂMICA */
+    .my-picture {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0.5;
+      pointer-events: none;
+      opacity: 1;
+      mix-blend-mode: normal;
+      filter: saturate(1); /* Saturação inicial total */
+      transition: filter 0.5s ease-out;
+      will-change: filter;
+    }
+
+    /* NOVA CAMADA PARA MÁSCARA DE DESFOQUE */
+    .reveal-mask {
+      position: absolute;
+      inset: 0;
+      z-index: 0.55;
+      pointer-events: none;
+      filter: blur(12px);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Nova imagem MyPictureEditing.png - COM OPACIDADE DINÂMICA */
+    .my-picture-editing {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0.6;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: normal;
+      transition: opacity 0.2s ease-out;
+      filter: brightness(1.1) contrast(1.05);
+      will-change: transform, opacity;
+    }
+
+    /* Efeito de brilho ao redor da área revelada */
+    .my-picture-editing::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at center,
+        transparent 50%,
+        rgba(255, 255, 255, 0.05) 70%,
+        rgba(255, 255, 255, 0.08) 85%,
+        transparent 100%
+      );
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      opacity: 0.4;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Imagem Souza.png no centro superior - COM OPACIDADE DINÂMICA */
+    .souza-logo {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 70px;
+      z-index: 2;
+      pointer-events: none;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity;
+    }
+
+    .souza-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* NOVA IMAGEM SOUZA NO CENTRO SUPERIOR QUANDO O CONTAINER ESTÁ NO ESTADO FINAL */
+    .souza-logo-final-container {
+      position: fixed;
+      top: 60px;
+      left: 47%;
+      transform: translateX(-50%);
+      z-index: 1001; /* Acima dos outros elementos fixos */
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
+    }
+
+    .souza-logo-final {
+      width: 70px; /* 50% menor que a original */
+      height: 35px; /* 50% menor que a original */
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    }
+
+    .souza-logo-final img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* TEXTO "MADE BY GIOVANE SOUZA" / "CRIADO POR GIOVANE SOUZA" - AGORA COM FONTE MONDA */
+    .made-by-text {
+      font-family: 'Monda', 'Arial', sans-serif; /* ALTERADO: Pemage → Monda */
+      font-size: 9px; /* Aumentado ligeiramente para melhor legibilidade */
+      font-weight: normal;
+      color: #FFFFFF;
+      letter-spacing: 0.8px; /* Aumentado para a fonte Monda */
+      text-transform: uppercase;
+      line-height: 1;
+      text-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        0 2px 4px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+      will-change: opacity, transform;
+      white-space: nowrap;
+    }
+
+    .souza-logo-final-container.visible .made-by-text {
+      opacity: 0.85; /* Aumentado para melhor visibilidade */
+      transform: translateY(0);
+    }
+
+    /* Nome GIOVANE SOUZA no lado esquerdo - AGORA FIXO E COM COR DINÂMICA */
+    .name-container {
+      position: fixed;
+      top: 60px;
+      left: 60px;
+      z-index: 2001; /* AUMENTADO: Agora está acima do carrossel quando ativo */
+      pointer-events: auto; /* ALTERADO: Permite interação mesmo com carrossel ativo */
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      gap: 0;
+      transition: color 0.5s ease, text-shadow 0.5s ease;
+      will-change: color, text-shadow;
+    }
+
+    .name-giovane {
+      font-family: 'Pemage', 'Arial', sans-serif;
+      font-size: 60px;
+      font-weight: 500;
+      color: #000000;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      line-height: 0.85;
+      text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.6),
+        0 2px 4px rgba(255, 255, 255, 0.5),
+        0 4px 8px rgba(255, 255, 255, 0.4);
+      margin-bottom: -3px;
+      transition: inherit;
+    }
+
+    .name-souza {
+      font-family: 'Drogel', 'Arial Black', sans-serif;
+      font-size: 30px;
+      font-weight: 900;
+      color: #000000;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      line-height: 1;
+      text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 0.6),
+        0 2px 4px rgba(255, 255, 255, 0.5),
+        0 4px 8px rgba(255, 255, 255, 0.4);
+      margin-top: -1px;
+      transition: inherit;
+    }
+
+    /* Contêiner para as imagens no canto inferior esquerdo */
+    .images-container {
+      position: absolute;
+      left: 60px;
+      bottom: 60px;
+      z-index: 2;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity;
+    }
+
+    /* Imagem Svg.png no canto inferior esquerdo - COM OPACIDADE DINÂMICA */
+    .svg-image {
+      width: 100px;
+      height: auto;
+      position: relative;
+      margin-bottom: 0px;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity;
+    }
+
+    .svg-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))
+             drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    /* =========================
+       IMAGEM DO BRASIL GIRANDO HORIZONTALMENTE - COM OPACIDADE DINÂMICA
+    ========================== */
+    .brazil-icon-rotating {
+      position: absolute;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%) rotateY(45deg) rotateX(60deg);
+      width: 70px;
+      height: 70px;
+      z-index: 2;
+      pointer-events: none;
+      transform-style: preserve-3d;
+      animation: horizontalRotate 8s linear infinite;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity, transform;
+    }
+
+    .brazil-icon-rotating img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Animação de rotação horizontal contínua */
+    @keyframes horizontalRotate {
+      0% {
+        transform: translateX(-50%) rotateY(0deg) rotateX(60deg);
+      }
+      25% {
+        transform: translateX(-50%) rotateY(90deg) rotateX(60deg);
+      }
+      50% {
+        transform: translateX(-50%) rotateY(180deg) rotateX(60deg);
+      }
+      75% {
+        transform: translateX(-50%) rotateY(270deg) rotateX(60deg);
+      }
+      100% {
+        transform: translateX(-50%) rotateY(360deg) rotateX(60deg);
+      }
+    }
+
+    /* Ícone de design posicionado sobre a imagem SVG - COM OPACIDADE DINÂMICA */
+    .design-icon {
+      position: absolute;
+      top: 125px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      z-index: 3;
+      opacity: 1;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: opacity;
+    }
+
+    .design-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: 
+        drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4))
+        drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3))
+        brightness(1.2);
+      transition: all 0.4s ease;
+    }
+
+    /* Efeito de brilho pulsante */
+    @keyframes glowPulse {
+      0%, 100% {
+        filter: 
+          drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3))
+          brightness(1.2)
+          drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+      }
+      50% {
+        filter: 
+          drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3))
+          brightness(1.5)
+          drop-shadow(0 0 10px rgba(255, 255, 255, 0.6))
+          drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+      }
+    }
+
+    .design-icon img {
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    /* Efeito de brilho extra no hover */
+    .design-icon:hover img {
+      animation: glowPulse 1s ease-in-out infinite;
+      filter: 
+        drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4))
+        drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3))
+        brightness(1.8)
+        drop-shadow(0 0 15px rgba(255, 255, 255, 0.8))
+        drop-shadow(0 0 25px rgba(255, 255, 255, 0.5))
+        drop-shadow(0 0 35px rgba(255, 255, 255, 0.3));
+    }
+
+    /* Efeito de reflexo interno */
+    .design-icon::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(
+        circle at 30% 30%,
+        rgba(255, 255, 255, 0.4) 0%,
+        rgba(255, 255, 255, 0.2) 30%,
+        rgba(255, 255, 255, 0.1) 50%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      z-index: 4;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+    }
+
+    /* Efeito de brilho externo */
+    .design-icon::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      background: radial-gradient(
+        circle at 50% 50%,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0.1) 40%,
+        transparent 70%
+      );
+      border-radius: 50%;
+      z-index: 2;
+      pointer-events: none;
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+
+    /* =========================
+       ÍCONE DA CANETA - POSIÇÃO FIXA
+    ========================== */
+    .pen-icon {
+      position: fixed;
+      left: 800px;
+      bottom: 45px;
+      width: 150px; /* 50px * escala 3 = 150px */
+      height: auto;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+
+    .pen-icon.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .safe-area {
+      position: absolute;
+      top: 60px;
+      left: 60px;
+      right: 60px;
+      bottom: 60px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* =========================
+       HAMBURGER → X DESENHADO COM FUNDO SÓLIDO
+       AGORA FIXO E COM COR DINÂMICA
+    ========================== */
+    .hamburger {
+      position: fixed;
+      top: 60px;
+      right: 60px;
+      width: 56px;
+      height: 56px;
+      border: 3px solid #000;
+      border-radius: 14px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-direction: column;
+      cursor: pointer;
+      z-index: 2002; /* AUMENTADO: Acima do carrossel */
+      overflow: hidden;
+      perspective: 1200px;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: border-color, box-shadow;
+      pointer-events: auto; /* ALTERADO: Permite interação mesmo com carrossel ativo */
+    }
+
+    /* FUNDO SÓLIDO SEM OPACIDADE */
+    .hamburger::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, 
+        #FF0035 0%, 
+        #E00030 50%, 
+        #FF0035 100%);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: -1;
+    }
+
+    /* Efeito de brilho no hover */
+    .hamburger::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, 
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0.15) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: -1;
+    }
+
+    .hamburger:hover {
+      border-color: #FF0035;
+      transform: translateY(-2px);
+      box-shadow: 
+        0 8px 25px rgba(255, 0, 53, 0.5),
+        0 2px 6px rgba(255, 0, 53, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+    }
+
+    .hamburger:hover::before {
+      transform: scaleY(1);
+    }
+
+    .hamburger:hover::after {
+      opacity: 1;
+    }
+
+    .hamburger span {
+      width: 32px;
+      height: 3px;
+      background: #000;
+      border-radius: 999px;
+      transform-origin: center;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      z-index: 1;
+      will-change: background, transform;
+    }
+
+    .hamburger:hover span {
+      background: #000;
+    }
+
+    .hamburger:hover span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+      animation: drawX_A 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation-delay: 0.1s;
+    }
+
+    .hamburger:hover span:nth-child(2) {
+      transform: translateY(-6px) rotate(-45deg);
+      animation: drawX_B 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      animation-delay: 0.2s;
+    }
+
+    @keyframes drawX_A {
+      0%, 100% { width: 32px; opacity: 1; transform: translateY(6px) rotate(45deg) scaleX(1); }
+      30% { width: 8px; opacity: 0.7; transform: translateY(6px) rotate(45deg) scaleX(0.6); }
+      50% { width: 20px; opacity: 0.9; transform: translateY(6px) rotate(45deg) scaleX(0.8); }
+      70% { width: 28px; opacity: 1; transform: translateY(6px) rotate(45deg) scaleX(0.95); }
+    }
+
+    @keyframes drawX_B {
+      0%, 100% { width: 32px; opacity: 1; transform: translateY(-6px) rotate(-45deg) scaleX(1); }
+      30% { width: 8px; opacity: 0.7; transform: translateY(-6px) rotate(-45deg) scaleX(0.6); }
+      50% { width: 20px; opacity: 0.9; transform: translateY(-6px) rotate(-45deg) scaleX(0.8); }
+      70% { width: 28px; opacity: 1; transform: translateY(-6px) rotate(-45deg) scaleX(0.95); }
+    }
+
+    /* =========================
+       BOTÃO DE ALTERNÂNCIA DE IDIOMA
+       AGORA FIXO NA TELA (NÃO DIMINUI COM O ZOOM)
+    ========================== */
+    .language-switch-container {
+      position: fixed;
+      top: 60px;
+      right: 132px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 2001; /* AUMENTADO: Acima do carrossel */
+      padding: 8px 0;
+      pointer-events: auto; /* ALTERADO: Permite interação mesmo com carrossel ativo */
+    }
+
+    /* TEXTO EN/PT MENOR - COM COR DINÂMICA */
+    .language-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      transition: all 0.3s ease;
+      user-select: none;
+      text-shadow: none;
+      color: #000000;
+      opacity: 0.7;
+      white-space: nowrap;
+      will-change: color, opacity;
+    }
+
+    .language-label.en {
+      opacity: 0.9;
+    }
+
+    .language-label.pt {
+      opacity: 0.6;
+    }
+
+    .language-switch-container.active-pt .language-label.en {
+      opacity: 0.6;
+    }
+
+    .language-switch-container.active-pt .language-label.pt {
+      opacity: 0.9;
+    }
+
+    /* Switch principal - FUNDO SÓLIDO */
+    .language-switch {
+      position: relative;
+      width: 72px;
+      height: 36px;
+      background: #FF0035;
+      border-radius: 36px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      box-shadow: 
+        0 3px 12px rgba(255, 0, 53, 0.4),
+        0 1px 4px rgba(255, 0, 53, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin: 0 2px;
+    }
+
+    /* FUNDO SÓLIDO SEM OPACIDADE */
+    .language-switch::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, 
+        #FF0035 0%, 
+        #E00030 50%, 
+        #FF0035 100%);
+      border-radius: 36px;
+      z-index: 1;
+    }
+
+    /* =========================
+       BANDEIRA DO REINO UNIDO
+    ========================== */
+    .uk-flag {
+      position: absolute;
+      inset: 0;
+      border-radius: 36px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    /* Fundo azul */
+    .uk-flag::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #012169;
+      border-radius: 36px;
+    }
+
+    /* Cruz */
+    .uk-flag::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(90deg, 
+          transparent 0%, transparent 45%,
+          #FFFFFF 45%, #FFFFFF 55%,
+          transparent 55%, transparent 100%),
+        linear-gradient(0deg, 
+          transparent 0%, transparent 45%,
+          #FFFFFF 45%, #FFFFFF 55%,
+          transparent 55%, transparent 100%),
+        linear-gradient(45deg, 
+          transparent 0%, transparent 43%,
+          #FFFFFF 43%, #FFFFFF 47%,
+          transparent 47%, transparent 53%,
+          #FFFFFF 53%, #FFFFFF 57%,
+          transparent 57%, transparent 100%),
+        linear-gradient(-45deg, 
+          transparent 0%, transparent 43%,
+          #FFFFFF 43%, #FFFFFF 47%,
+          transparent 47%, transparent 53%,
+          #FFFFFF 53%, #FFFFFF 57%,
+          transparent 57%, transparent 100%),
+        linear-gradient(90deg, 
+          transparent 0%, transparent 47%,
+          #C8102E 47%, #C8102E 53%,
+          transparent 53%, transparent 100%),
+        linear-gradient(0deg, 
+          transparent 0%, transparent 47%,
+          #C8102E 47%, #C8102E 53%,
+          transparent 53%, transparent 100%),
+        linear-gradient(45deg, 
+          transparent 0%, transparent 45%,
+          #C8102E 45%, #C8102E 49%,
+          transparent 49%, transparent 51%,
+          #C8102E 51%, #C8102E 55%,
+          transparent 55%, transparent 100%),
+        linear-gradient(-45deg, 
+          transparent 0%, transparent 45%,
+          #C8102E 45%, #C8102E 49%,
+          transparent 49%, transparent 51%,
+          #C8102E 51%, #C8102E 55%,
+          transparent 55%, transparent 100%);
+      border-radius: 36px;
+    }
+
+    /* =========================
+       BANDEIRA DO BRASIL
+    ========================== */
+    .br-flag {
+      position: absolute;
+      inset: 0;
+      border-radius: 36px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    /* Fundo verde */
+    .br-flag::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #009B3A;
+      border-radius: 36px;
+    }
+
+    /* Losango amarelo */
+    .br-flag::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56%;
+      height: 56%;
+      background: #FEDF00;
+      clip-path: polygon(
+        50% 0%,
+        100% 50%,
+        50% 100%,
+        0% 50%
+      );
+      z-index: 1;
+    }
+
+    /* Círculo azul */
+    .br-flag .circle-blue {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      background: #002776;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    /* Faixa branca */
+    .br-flag .white-band {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 15px;
+      height: 1.5px;
+      background: #FFFFFF;
+      border-radius: 1px;
+      z-index: 3;
+    }
+
+    /* Estrelas */
+    .br-flag .star {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      z-index: 4;
+    }
+
+    /* Posições das estrelas */
+    .br-flag .star:nth-child(1) { top: 38%; left: 45%; }
+    .br-flag .star:nth-child(2) { top: 42%; left: 52%; }
+    .br-flag .star:nth-child(3) { top: 50%; left: 48%; }
+    .br-flag .star:nth-child(4) { top: 58%; left: 44%; }
+    .br-flag .star:nth-child(5) { top: 62%; left: 52%; }
+
+    /* MOSTRAR BANDEIRAS */
+    .language-switch.show-flag-uk .uk-flag {
+      opacity: 1;
+    }
+
+    .language-switch.show-flag-br .br-flag {
+      opacity: 1;
+    }
+
+    /* Voltar ao vermelho */
+    .language-switch.fade-to-red .uk-flag,
+    .language-switch.fade-to-red .br-flag {
+      opacity: 0;
+    }
+
+    /* =========================
+       CÍRCULO DESLIZANTE PRETO - COM COR DINÂMICA
+    ========================== */
+    .switch-handle {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 28px;
+      height: 28px;
+      background: 
+        radial-gradient(circle at 30% 30%, 
+          rgba(20, 20, 20, 0.95) 0%,
+          rgba(10, 10, 10, 0.9) 30%,
+          rgba(0, 0, 0, 0.85) 100%),
+        linear-gradient(145deg, 
+          rgba(40, 40, 40, 0.9),
+          rgba(20, 20, 20, 0.8));
+      border-radius: 50%;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        0 1px 3px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(80, 80, 80, 0.5),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(60, 60, 60, 0.7);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: background, border-color, box-shadow;
+    }
+
+    .switch-handle::after {
+      content: "";
+      width: 4px;
+      height: 4px;
+      background: 
+        radial-gradient(circle at 30% 30%, 
+          rgba(120, 120, 120, 0.8),
+          rgba(60, 60, 60, 0.9));
+      border-radius: 50%;
+      box-shadow: 
+        inset 0 1px 1px rgba(0, 0, 0, 0.5),
+        0 1px 1px rgba(100, 100, 100, 0.4);
+    }
+
+    .language-switch.active .switch-handle {
+      left: calc(100% - 32px);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+    }
+
+    /* Efeito de clique */
+    .language-switch:active .switch-handle {
+      width: 26px;
+      height: 26px;
+      top: 5px;
+      left: 5px;
+      box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.6),
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(60, 60, 60, 0.6),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.7);
+    }
+
+    .language-switch.active:active .switch-handle {
+      left: calc(100% - 31px);
+    }
+
+    /* Animações de hover */
+    .language-switch:hover {
+      transform: translateY(-1px);
+      box-shadow: 
+        0 5px 15px rgba(255, 0, 53, 0.5),
+        0 2px 6px rgba(255, 0, 53, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .language-switch:hover .switch-handle {
+      box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.6),
+        0 1px 4px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(100, 100, 100, 0.4),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.7);
+    }
+
+    /* =========================
+       ANIMAÇÃO DE REVELAÇÃO
+    ========================== */
+    @keyframes flagPulse {
+      0% {
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.8;
+      }
+    }
+
+    .language-switch.show-flag-uk .uk-flag,
+    .language-switch.show-flag-br .br-flag {
+      animation: flagPulse 0.8s ease-in-out;
+    }
+
+    /* =========================
+       MÁSCARA DE REVELAÇÃO VERMELHA - ANIMAÇÃO
+       COR SÓLIDA #E80031 SEM DEGRADÊ
+    ========================== */
+    .text-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #E80031; /* COR SÓLIDA SEM DEGRADÊ */
+      z-index: 1000;
+      transform: translateX(-100%);
+      opacity: 1;
+      pointer-events: none;
+      box-shadow: 0 0 20px rgba(232, 0, 49, 0.7);
+      border-radius: 2px;
+    }
+
+    /* Contêiner para a máscara do título - AJUSTADO */
+    .name-mask-container {
+      position: fixed;
+      top: 43%; /* Ajustado para corresponder ao .name-alvaro-container */
+      left: calc(50% - 250px);
+      transform: translateY(-50%);
+      width: 500px;
+      height: 320px;
+      z-index: 999; /* Aumentado para ficar acima do texto */
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-out, 
+                  visibility 0.5s ease-out,
+                  transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+      will-change: transform, opacity, visibility;
+    }
+
+    /* Contêiner para a máscara da descrição - AJUSTADO */
+    .description-mask-container {
+      position: fixed;
+      top: calc(50% + 170px); /* Alterado de 160px para 170px - mais para baixo */
+      left: calc(50% - 250px);
+      width: 500px;
+      height: 150px;
+      z-index: 999; /* Aumentado para ficar acima do texto */
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-out, 
+                  visibility 0.5s ease-out,
+                  transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+      will-change: transform, opacity, visibility;
+    }
+
+    /* Ajuste para garantir que as máscaras fiquem acima do texto */
+    .name-mask-container {
+      z-index: 1000 !important;
+    }
+
+    .description-mask-container {
+      z-index: 1000 !important;
+    }
+
+    /* Animação da máscara revelando o texto - MAIS RÁPIDA */
+    @keyframes revealText {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    /* Animação de máscara para cada linha do texto final */
+    @keyframes revealLine {
+      0% {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      20% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes maskGlow {
+      0% {
+        opacity: 0.6;
+        filter: blur(2px);
+      }
+      100% {
+        opacity: 1;
+        filter: blur(4px);
+      }
+    }
+
+    /* =========================
+       NOME GIOVANE ALVARO DE SOUZA - APARECE NO ESTADO FINAL
+       POSICIONADO À ESQUERDA DO CONTAINER
+       Z-INDEX REDUZIDO PARA FICAR ABAIXO DA MÁSCARA
+    ========================== */
+    .name-alvaro-container {
+      position: fixed;
+      top: 43%; /* Mantido em 43% */
+      left: calc(50% - 250px);
+      transform: translateY(-50%);
+      z-index: 998; /* Reduzido para ficar abaixo da máscara */
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 2px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-out,
+                  visibility 0.5s ease-out,
+                  transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, visibility, transform;
+    }
+
+    /* Linha 1: GIOVANE */
+    .name-alvaro-giovane {
+      font-family: 'Pemage', 'Arial', sans-serif;
+      font-size: 140px;
+      font-weight: 500;
+      color: #FFFFFF;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      line-height: 0.8;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-bottom: 8px;
+    }
+
+    /* Linha 2: ALVARO DE */
+    .name-alvaro-de {
+      font-family: 'Pemage', 'Arial', sans-serif;
+      font-size: 140px;
+      font-weight: 500;
+      color: #FFFFFF;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      line-height: 0.85;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: -18px;
+      margin-bottom: 0;
+    }
+
+    /* Linha 3: SOUZA */
+    .name-alvaro-souza {
+      font-family: 'Drogel', 'Arial Black', sans-serif;
+      font-size: 110px;
+      font-weight: 900;
+      color: #E80031; /* Vermelho específico */
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 0.85;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 8px rgba(0, 0, 0, 0.2);
+      margin-top: -12px;
+    }
+
+    /* =========================
+       DESCRIÇÃO PROFISSIONAL - ABAIXO DO NOME
+       Z-INDEX REDUZIDO PARA FICAR ABAIXO DA MÁSCARA
+       AINDA MAIS PARA BAIXO AGORA
+    ========================== */
+    .description-container {
+      position: fixed;
+      top: calc(50% + 170px); /* Alterado de 160px para 170px - mais para baixo */
+      left: calc(50% - 250px);
+      z-index: 998; /* Reduzido para ficar abaixo da máscara */
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      width: 500px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-out,
+                  visibility 0.5s ease-out,
+                  transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, visibility, transform;
+    }
+
+    .description-text {
+      font-family: 'Sora', 'Segoe UI', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: #FFFFFF;
+      line-height: 1.4;
+      letter-spacing: 0.3px;
+      text-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.2);
+      white-space: pre-line;
+      text-align: left;
+    }
+
+    /* =========================
+       NOVO TEXTO FINAL QUE APARECE APÓS O PARALLAX
+       AGORA COM MÁSCARAS INDIVIDUAIS PARA CADA LINHA
+       E COM ANIMAÇÃO DE PARALLAX AO SCROLL
+    ========================== */
+    .final-text-container {
+      position: fixed;
+      top: 55%; /* ALTERADO: de 50% para 55% - texto mais para baixo */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1002; /* Acima de tudo */
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 800px;
+      max-width: 90vw;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-out,
+                  visibility 0.8s ease-out,
+                  transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transição mais longa para parallax */
+      will-change: opacity, visibility, transform;
+    }
+
+    .final-text {
+      font-family: 'GC Epic Pro', 'Arial', sans-serif;
+      font-size: 48px; /* ALTERADO: de 42px para 48px - texto aumentado */
+      font-weight: normal;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+      line-height: 0.95; /* ALTERADO: de 1 para 0.95 - espaçamento entre linhas reduzido */
+      text-align: center;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.4),
+        0 8px 16px rgba(0, 0, 0, 0.3);
+      white-space: pre-line;
+    }
+
+    /* Palavras em destaque com fonte Drogel e cor vermelha */
+    .final-text-word {
+      font-family: 'Drogel', 'Arial Black', sans-serif;
+      color: #E70031;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-shadow: 
+        0 2px 4px rgba(231, 0, 49, 0.3),
+        0 4px 8px rgba(231, 0, 49, 0.2);
+    }
+
+    /* Contêineres individuais para cada linha do texto final */
+    .final-line-container {
+      position: relative;
+      width: 100%;
+      height: 50px; /* ALTERADO: de 55px para 50px - altura reduzida */
+      margin: 2px 0; /* ALTERADO: de 3px para 2px - espaçamento entre linhas ainda menor */
+      overflow: hidden;
+    }
+
+    .final-line-text {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'GC Epic Pro', 'Arial', sans-serif;
+      font-size: 48px; /* ALTERADO: de 42px para 48px - mantém consistência */
+      color: #FFFFFF;
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .final-line-text.visible {
+      opacity: 1;
+    }
+
+    /* Palavras em destaque em cada linha */
+    .final-line-word {
+      font-family: 'Drogel', 'Arial Black', sans-serif;
+      color: #E70031;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-shadow: 
+        0 2px 4px rgba(231, 0, 49, 0.3),
+        0 4px 8px rgba(231, 0, 49, 0.2);
+    }
+
+    /* Máscaras individuais para cada linha */
+    .final-line-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #E80031;
+      z-index: 1004;
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 0 15px rgba(232, 0, 49, 0.8);
+      border-radius: 3px;
+    }
+
+    /* Contêiner principal para as máscaras do texto final */
+    .final-masks-container {
+      position: fixed;
+      top: 55%; /* ALTERADO: de 50% para 55% - mantém sincronizado com o texto */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 260px; /* ALTERADO: de 265px para 260px (5 linhas × 50px + 4 × 2px) */
+      z-index: 1003; /* Acima do texto final */
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-out, 
+                  visibility 0.8s ease-out,
+                  transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transição mais longa para parallax */
+      will-change: opacity, visibility, transform;
+    }
+
+    /* =========================
+       NOVO: ESTILOS PARA O CARROSSEL DE CASES
+    ========================== */
+    .carousel-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2000; /* Acima de tudo */
+      pointer-events: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+      overflow: hidden;
+    }
+
+    .carousel-container.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Wrapper para o canvas do carrossel */
+    .carousel-scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-canvas-wrapper {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      max-width: 100vw;
+      max-height: 100vh;
+      aspect-ratio: 16 / 9;
+      z-index: 2001;
+      transition: transform 0.3s ease-out;
+      overflow: visible;
+    }
+
+    #carouselCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+    }
+
+    /* Transição de entrada do carrossel */
+    @keyframes slideInFromBottom {
+      0% {
+        transform: translateY(100vh);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .carousel-container.active .carousel-scene {
+      animation: slideInFromBottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* Quando o carrossel está ativo, esconder outros elementos MAS MANTER OS ELEMENTOS FIXOS */
+    body.carousel-active .stage,
+    body.carousel-active .souza-logo-final-container,
+    body.carousel-active .name-alvaro-container,
+    body.carousel-active .description-container,
+    body.carousel-active .final-text-container,
+    body.carousel-active .final-masks-container,
+    body.carousel-active .pen-icon {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* MANTER OS ELEMENTOS FIXOS VISÍVEIS E INTERATIVOS */
+    body.carousel-active .name-container,
+    body.carousel-active .language-switch-container,
+    body.carousel-active .hamburger {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 2001 !important; /* Garante que fiquem acima do carrossel */
+    }
+
+    /* =========================
+       NOVO: ESTILOS PARA O STACKS (APÓS O CARROSSEL DE CASES)
+    ========================== */
+    .stacks-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3000; /* Acima do carrossel de cases */
+      pointer-events: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+      overflow: hidden;
+      background: transparent; /* Fundo transparente para usar o do site */
+    }
+
+    .stacks-container.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* CANVAS DO STACKS */
+    .stacks-canvas {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* STACKS FUNDO - TEXTO ALTERADO PARA #FF0035 - AGORA COM FONTE ESTRELLA */
+    .stacks-bg {
+      position: absolute;
+      left: -60px;
+      top: 60%;
+      transform: translateY(-50%) rotate(-15deg);
+      font-family: "Estrella", sans-serif; /* ALTERADO: Hendrigo → Estrella */
+      font-size: 200px;
+      color: #FF0035; /* ALTERADO: de #000000 para #FF0035 - VERMELHO */
+      white-space: nowrap;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* TÍTULO DO STACKS - TEXTO PRETO */
+    .stacks-title {
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000000; /* PRETO */
+      z-index: 3;
+      line-height: 0.94;
+    }
+
+    .stacks-title .line-1 {
+      font-family: "EpicPro", sans-serif;
+      font-size: 54px;
+      letter-spacing: 1px;
+      color: #000000; /* PRETO */
+    }
+
+    .stacks-title .line-2 {
+      font-family: "Drogel", sans-serif;
+      font-size: 84px;
+      color: #000000; /* PRETO */
+    }
+
+    /* DESCRIÇÃO DO STACKS - TEXTO PRETO */
+    .stacks-description {
+      position: absolute;
+      left: 730px;
+      top: 46%;
+      transform: translateY(-50%);
+      max-width: 420px;
+      font-family: "Sora", sans-serif;
+      font-size: 18px;
+      line-height: 1.5;
+      color: #000000; /* PRETO */
+      z-index: 3;
+    }
+
+    /* CARROSSEL DO STACKS */
+    .stacks-carousel-wrapper {
+      position: absolute;
+      bottom: 100px;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .stacks-carousel-track {
+      display: flex;
+      gap: 60px;
+      width: max-content;
+      animation: scroll 35s linear infinite;
+    }
+
+    .stacks-carousel-track img {
+      height: 42px;
+      width: auto;
+      opacity: 0.85;
+      filter: grayscale(100%);
+    }
+
+    @keyframes scroll {
+      from {
+        transform: translateX(0);
+      }
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ALTERADO: Animação de entrada do stacks - BAIXO PARA CIMA */
+    @keyframes slideInFromBottomStacks {
+      0% {
+        transform: translateY(100vh);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .stacks-container.active .stacks-canvas {
+      animation: slideInFromBottomStacks 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* Quando o stacks está ativo, esconder outros elementos MAS MANTER OS ELEMENTOS FIXOS */
+    body.stacks-active .stage,
+    body.stacks-active .souza-logo-final-container,
+    body.stacks-active .name-alvaro-container,
+    body.stacks-active .description-container,
+    body.stacks-active .final-text-container,
+    body.stacks-active .final-masks-container,
+    body.stacks-active .pen-icon,
+    body.stacks-active .carousel-container {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* MANTER OS ELEMENTOS FIXOS VISÍVEIS E INTERATIVOS NO STACKS */
+    body.stacks-active .name-container,
+    body.stacks-active .language-switch-container,
+    body.stacks-active .hamburger {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 3001 !important; /* Garante que fiquem acima do stacks */
+    }
+
+    /* =========================
+       NOVO: ESTILOS PARA O CONTAINER FINAL (APÓS O STACKS)
+       COM ANIMAÇÃO DE BAIXO PARA CIMA
+       MODIFICADO: SEM FUNDO PRETO, AGORA COM GRADIENTE DINÂMICO
+    ========================== */
+    .final-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 4000; /* Acima do stacks */
+      pointer-events: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+      overflow: hidden;
+      background: transparent; /* Fundo transparente - gradiente será aplicado via elemento separado */
+    }
+
+    .final-container.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Container principal do final */
+    .final-main-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: auto;
+      background: transparent; /* Fundo transparente */
+    }
+
+    /* FORMA PRETA NO CONTAINER FINAL - ATRÁS DE TODOS OS ELEMENTOS */
+    .final-black-form {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 1750px;
+      height: 950px;
+      max-width: 90%;
+      max-height: 85%;
+      background: #000;
+      border-radius: 42px;
+      z-index: 5; /* Atrás da imagem e dos textos */
+      pointer-events: none;
+    }
+
+    /* Canvas para o fundo - AGORA TRANSPARENTE */
+    .final-canvas-bg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      max-width: 1920px;
+      max-height: 1080px;
+      z-index: 4; /* Atrás da imagem */
+      background: transparent; /* Fundo transparente */
+    }
+
+    /* Canvas para textos interativos - AGORA NA FRENTE DE TUDO */
+    .final-canvas-text {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      max-width: 1920px;
+      max-height: 1080px;
+      position: relative;
+      z-index: 25; /* AUMENTADO: Textos na frente de tudo (IMPORTANTE: acima da imagem) */
+      background: transparent; /* Fundo transparente */
+    }
+
+    /* Imagem central - ATRÁS dos textos (Z-INDEX REDUZIDO) */
+    .final-center-image {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 15; /* REDUZIDO: Atrás do carrossel (10) e ATRÁS dos textos (25) */
+      width: 100%;
+      height: 100%;
+      max-width: 1920px;
+      max-height: 1080px;
+      object-fit: contain;
+    }
+
+    /* CARROSSEL INFERIOR - ATRÁS da imagem */
+    .final-bottom-carousel {
+      position: absolute;
+      bottom: 10%;
+      left: 0;
+      width: 100%;
+      z-index: 10; /* Atrás da imagem (15) */
+      pointer-events: none;
+    }
+
+    .final-carousel-container {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .final-carousel-track {
+      display: flex;
+      gap: 4vw;
+      width: max-content;
+      will-change: transform;
+    }
+
+    .final-carousel-track img {
+      width: 3.5vw;
+      height: 3.5vw;
+      min-width: 40px;
+      min-height: 40px;
+      max-width: 64px;
+      max-height: 64px;
+      object-fit: contain;
+      user-select: none;
+      pointer-events: none;
+      transition: transform 0.3s ease;
+      opacity: 0.8;
+    }
+
+    /* Efeito sutil de hover nas imagens */
+    .final-carousel-track img:hover {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+
+    /* Copyright no canto esquerdo - NA FRENTE de tudo */
+    .final-copyright {
+      position: absolute;
+      bottom: 5px; /* ALTERADO: de 20px para 5px - 5px da borda de baixo */
+      left: 20px;
+      color: white;
+      font-family: 'Sora', sans-serif;
+      font-size: 9px;
+      font-weight: 300;
+      z-index: 30; /* Na frente de tudo */
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .final-copyright-bold {
+      font-weight: 700;
+    }
+
+    /* Imagens para o carrossel do canvas (ocultas) */
+    .final-carousel-img {
+      display: none;
+    }
+
+    /* NOVO: ESTILOS PARA OS LINKS DOS TEXTOS NO CONTAINER FINAL (ALTERADO PARA EFEITO DE HOVER DUPLICADO) */
+    .final-text-link {
+      position: absolute;
+      z-index: 30; /* Acima de tudo */
+      font-family: 'GCEpicPro', 'Arial', sans-serif;
+      font-size: 32px;
+      font-weight: bold;
+      color: #FFFFFF;
+      text-decoration: none;
+      pointer-events: auto;
+      cursor: pointer;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .final-text-link span {
+      display: block;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      color: #fff;
+    }
+
+    .final-text-link::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -100%;
+      text-align: center;
+      color: #fff;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    .final-text-link:hover span {
+      transform: translateY(100%);
+    }
+
+    .final-text-link:hover::after {
+      transform: translateY(100%);
+    }
+
+    /* Efeito de cor no hover */
+    .final-text-link:hover span,
+    .final-text-link:hover::after {
+      color: #ffffff;
+    }
+
+    .final-text-link.whatsapp { top: 52.5%; left: 85%; transform: translate(-50%, -50%); }
+    .final-text-link.instagram { top: 56%; left: 85%; transform: translate(-50%, -50%); }
+    .final-text-link.telegram { top: 59.5%; left: 85%; transform: translate(-50%, -50%); }
+    .final-text-link.gmail { top: 63%; left: 85%; transform: translate(-50%, -50%); }
+    .final-text-link.github { top: 56%; left: 15%; transform: translate(-50%, -50%); }
+    .final-text-link.linkedin { top: 59.5%; left: 15%; transform: translate(-50%, -50%); }
+    .final-text-link.behance { top: 63%; left: 15%; transform: translate(-50%, -50%); }
+
+    /* =========================
+       NOVO: TEXTO CENTRAL NO CONTAINER FINAL (ALTERADO - TEXTO AUMENTADO E ESPAÇAMENTO REDUZIDO)
+    ========================== */
+    .final-center-text {
+      position: absolute;
+      top: 38%; /* Acima da imagem */
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 26; /* Acima da imagem, abaixo dos links */
+      pointer-events: none;
+      text-align: center;
+      opacity: 1;
+      width: 100%;
+    }
+
+    .final-center-text .line-1 {
+      font-family: 'GC Epic Pro', 'Arial', sans-serif;
+      font-size: 56px; /* ALTERADO: de 42px para 56px - texto aumentado */
+      font-weight: normal;
+      color: #FFFFFF;
+      letter-spacing: 0.5px;
+      line-height: 0.9; /* ALTERADO: de 1 para 0.9 - espaçamento entre linhas reduzido */
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+      margin-bottom: 2px;
+    }
+
+    .final-center-text .line-2 {
+      font-family: 'Drogel', 'Arial Black', sans-serif;
+      font-size: 70px; /* ALTERADO: de 54px para 70px - texto aumentado */
+      font-weight: 900;
+      color: #E80031; /* Vermelho específico */
+      letter-spacing: 1px;
+      line-height: 0.9; /* ALTERADO: de 1 para 0.9 - espaçamento entre linhas reduzido */
+      text-shadow: 
+        0 2px 4px rgba(232, 0, 49, 0.3),
+        0 4px 8px rgba(232, 0, 49, 0.2);
+      margin-top: -5px; /* ALTERADO: Adicionado para reduzir espaçamento */
+    }
+
+    /* =========================
+       NOVO: TEXTOS PEQUENOS ACIMA DOS LINKS (ALTERADO - ESPAÇAMENTO AUMENTADO)
+    ========================== */
+    .final-section-label {
+      position: absolute;
+      z-index: 31; /* Acima dos links */
+      font-family: 'Sora', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      color: #FFFFFF;
+      text-align: center;
+      opacity: 0.8;
+      pointer-events: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .final-section-label.contacts {
+      top: 45%; /* ALTERADO: de 43% para 45% - espaçamento aumentado */
+      left: 85%;
+      transform: translate(-50%, -50%);
+    }
+
+    .final-section-label.works {
+      top: 45%; /* ALTERADO: de 43% para 45% - espaçamento aumentado */
+      left: 15%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Media query para telas muito grandes */
+    @media (min-width: 1920px) {
+      .final-carousel-track {
+        gap: 80px;
+      }
+      
+      .final-carousel-track img {
+        width: 64px;
+        height: 64px;
+      }
+      
+      .final-bottom-carousel {
+        bottom: 150px;
+      }
+      
+      .final-copyright {
+        font-size: 10px;
+        bottom: 5px; /* ALTERADO: de 30px para 5px - mantém 5px da borda */
+        left: 30px;
+      }
+      
+      .final-center-text .line-1 {
+        font-size: 64px; /* ALTERADO: de 48px para 64px - texto aumentado */
+      }
+      
+      .final-center-text .line-2 {
+        font-size: 78px; /* ALTERADO: de 60px para 78px - texto aumentado */
+      }
+    }
+
+    /* Media query para telas menores */
+    @media (max-width: 1366px) {
+      .final-carousel-track img {
+        width: 48px;
+        height: 48px;
+      }
+      
+      .final-copyright {
+        font-size: 8px;
+        bottom: 5px; /* ALTERADO: de 15px para 5px - mantém 5px da borda */
+        left: 15px;
+      }
+      
+      .final-center-text .line-1 {
+        font-size: 48px; /* ALTERADO: de 36px para 48px - texto aumentado */
+      }
+      
+      .final-center-text .line-2 {
+        font-size: 60px; /* ALTERADO: de 46px para 60px - texto aumentado */
+      }
+    }
+
+    /* Animação de entrada do container final - BAIXO PARA CIMA */
+    @keyframes slideInFromBottomFinal {
+      0% {
+        transform: translateY(100vh);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .final-container.active .final-main-container {
+      animation: slideInFromBottomFinal 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* Quando o container final está ativo, esconder outros elementos MAS MANTER OS ELEMENTOS FIXOS */
+    body.final-active .stage,
+    body.final-active .souza-logo-final-container,
+    body.final-active .name-alvaro-container,
+    body.final-active .description-container,
+    body.final-active .final-text-container,
+    body.final-active .final-masks-container,
+    body.final-active .pen-icon,
+    body.final-active .carousel-container,
+    body.final-active .stacks-container {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* MANTER OS ELEMENTOS FIXOS VISÍVEIS E INTERATIVOS NO CONTAINER FINAL */
+    body.final-active .name-container,
+    body.final-active .language-switch-container,
+    body.final-active .hamburger {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 4001 !important; /* Garante que fiquem acima do container final */
+    }
+
+    /* =========================
+       NOVOS ESTILOS PARA MÁSCARAS DO CARROSSEL DE CASES
+    ========================== */
+    .carousel-text-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #E80031;
+      z-index: 2002;
+      transform: translateX(-100%);
+      opacity: 0;
+      pointer-events: none;
+      box-shadow: 0 0 15px rgba(232, 0, 49, 0.8);
+      border-radius: 3px;
+    }
+
+    /* Contêineres para máscaras do texto principal do carrossel */
+    .carousel-title-mask-container {
+      position: absolute;
+      z-index: 2003;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .carousel-description-mask-container {
+      position: absolute;
+      z-index: 2003;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* Contêineres para máscaras dos textos das imagens */
+    .carousel-image-text-mask-container {
+      position: absolute;
+      z-index: 2003;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* =========================
+       NOVO: CONTAINER DO PORTFOLIO (TELA DO MENU)
+    ========================== */
+    .portfolio-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5000; /* Acima de tudo */
+      pointer-events: auto;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .portfolio-container.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ================= CANVAS ================= */
+    .portfolio-canvas-wrapper {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      max-width: 100vw;
+      max-height: 100vh;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    /* ================= VÍDEO ================= */
+    .portfolio-canvas-wrapper video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    /* ================= FOTOS ================= */
+    .portfolio-photo-blocks {
+      position: absolute;
+      left: 60px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      gap: 40px;
+      z-index: 2;
+    }
+
+    .portfolio-block-column {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .portfolio-block-column.left {
+      animation: floatUp 12s ease-in-out infinite;
+    }
+
+    .portfolio-block-column.right {
+      margin-top: -90px;
+      animation: floatDown 12s ease-in-out infinite;
+    }
+
+    .portfolio-photo {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      background: #222;
+      filter: grayscale(100%);
+    }
+
+    /* PRIMEIRA FOTO COLORIDA */
+    .portfolio-block-column.left .portfolio-photo:first-child {
+      filter: grayscale(0%);
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-40px); }
+      100% { transform: translateY(0); }
+    }
+
+    @keyframes floatDown {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(40px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* ================= MENU ================= */
+    .portfolio-menu {
+      position: absolute;
+      right: 150px;
+      top: 50%;
+      transform: translateY(-50%);
+      text-align: center;
+      font-family: "GCEpicPro", 'Arial', sans-serif; /* ALTERADO: EpicPro → GCEpicPro */
+      font-size: 50px;
+      line-height: 1;
+      letter-spacing: 3px;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .portfolio-menu-item {
+      position: relative;
+      height: 50px;
+      overflow: hidden;
+      cursor: pointer;
+      font-family: "GCEpicPro", 'Arial', sans-serif; /* ALTERADO: Fonte igual ao container final */
+      font-size: 50px; /* ALTERADO: Tamanho mantido */
+      font-weight: bold; /* ALTERADO: Peso igual ao container final */
+      color: #FFFFFF;
+      text-decoration: none;
+      pointer-events: auto;
+      text-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      height: 50px; /* ALTERADO: Altura específica */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .portfolio-menu-item span {
+      display: block;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      color: #fff;
+    }
+
+    .portfolio-menu-item::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -100%;
+      text-align: center;
+      color: #fff;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    .portfolio-menu-item:hover span {
+      transform: translateY(100%);
+    }
+
+    .portfolio-menu-item:hover::after {
+      transform: translateY(100%);
+    }
+
+    /* Efeito de cor no hover - IGUAL AO CONTAINER FINAL */
+    .portfolio-menu-item:hover span,
+    .portfolio-menu-item:hover::after {
+      color: #ffffff;
+    }
+
+    .portfolio-menu-item.portfolio {
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .portfolio-menu-item.portfolio span,
+    .portfolio-menu-item.portfolio::after {
+      color: #cfcfcf;
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+      transform: translateY(0) !important;
+    }
+
+    /* ================= CONTATOS ================= */
+    .portfolio-contacts {
+      position: absolute;
+      right: 70px; /* MAIS PARA A DIREITA (era 80px) */
+      bottom: 50px; /* MAIS PARA BAIXO (era 400px) */
+      text-align: center;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .portfolio-contacts-title {
+      font-family: "Sora", sans-serif;
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      opacity: 0.8;
+    }
+
+    .portfolio-social {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      font-family: "GCEpicPro", 'Arial', sans-serif; /* ALTERADO: EpicPro → GCEpicPro */
+      font-size: 16px;
+      font-weight: bold; /* ALTERADO: Peso igual ao container final */
+      letter-spacing: 2px;
+    }
+
+    .portfolio-social-item {
+      position: relative;
+      height: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none; /* ADICIONE ESTA LINHA PARA REMOVER SUBLINHADO */
+    }
+
+    .portfolio-social-item span {
+      display: block;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      color: #fff;
+    }
+
+    .portfolio-social-item::after {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -100%;
+      text-align: center;
+      color: #fff;
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    .portfolio-social-item:hover span {
+      transform: translateY(100%);
+    }
+
+    .portfolio-social-item:hover::after {
+      transform: translateY(100%);
+    }
+
+    /* =========================
+       QUANDO O PORTFOLIO ESTÁ ATIVO, ESCONDER TUDO EXCETO ELEMENTOS FIXOS
+    ========================== */
+    body.portfolio-active .stage,
+    body.portfolio-active .souza-logo-final-container,
+    body.portfolio-active .name-alvaro-container,
+    body.portfolio-active .description-container,
+    body.portfolio-active .final-text-container,
+    body.portfolio-active .final-masks-container,
+    body.portfolio-active .pen-icon,
+    body.portfolio-active .carousel-container,
+    body.portfolio-active .stacks-container,
+    body.portfolio-active .final-container,
+    body.portfolio-active .language-switch-container {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
+    /* MANTER APENAS O NOME E O MENU (AGORA COMO X) VISÍVEIS E BRANCOS */
+    body.portfolio-active .name-container,
+    body.portfolio-active .hamburger {
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      z-index: 5001 !important; /* Garante que fiquem acima do portfolio */
+    }
+
+    /* NO PORTFOLIO, NOME E MENU DEVEM SER BRANCOS */
+    body.portfolio-active .name-giovane,
+    body.portfolio-active .name-souza {
+      color: #FFFFFF !important;
+      text-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.6),
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 4px 8px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    body.portfolio-active .hamburger {
+      border-color: #FFFFFF !important;
+    }
+
+    body.portfolio-active .hamburger span {
+      background: #FFFFFF !important;
+    }
+
+    /* NO PORTFOLIO, O MENU DEVE FICAR COMO X (JÁ ESTÁ NO ESTADO HOVER) */
+    body.portfolio-active .hamburger:hover span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg) !important;
+      animation: drawX_A 3s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+      animation-delay: 0.1s !important;
+    }
+
+    body.portfolio-active .hamburger:hover span:nth-child(2) {
+      transform: translateY(-6px) rotate(-45deg) !important;
+      animation: drawX_B 3s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+      animation-delay: 0.2s !important;
+    }
+
+    /* MANTER O BACKGROUND PRETO VISÍVEL NO PORTFOLIO */
+    body.portfolio-active .background-black {
+      opacity: 1 !important;
+    }
+
+    body.portfolio-active .background-white,
+    body.portfolio-active .background-creme,
+    body.portfolio-active .background-gradient {
+      opacity: 0 !important;
+    }
+
+    /* Animação de entrada do portfolio */
+    @keyframes slideInFromBottomPortfolio {
+      0% {
+        transform: translateY(100vh);
+      }
+      100% {
+        transform: translateY(0);
+      }
+    }
+
+    .portfolio-container.active .portfolio-canvas-wrapper {
+      animation: slideInFromBottomPortfolio 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    /* =========================
+       NOVO: BOTÃO DE IDIOMA NO PORTFOLIO (MENU)
+    ========================== */
+    .portfolio-language-container {
+      position: fixed;
+      top: 60px;
+      right: 132px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 5002; /* Acima do portfolio */
+      padding: 8px 0;
+      pointer-events: auto;
+    }
+
+    .portfolio-language-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      transition: all 0.3s ease;
+      user-select: none;
+      text-shadow: none;
+      color: #FFFFFF; /* BRANCO no portfolio */
+      opacity: 0.7;
+      white-space: nowrap;
+      will-change: color, opacity;
+    }
+
+    .portfolio-language-label.en {
+      opacity: 0.9;
+    }
+
+    .portfolio-language-label.pt {
+      opacity: 0.6;
+    }
+
+    .portfolio-language-container.active-pt .portfolio-language-label.en {
+      opacity: 0.6;
+    }
+
+    .portfolio-language-container.active-pt .portfolio-language-label.pt {
+      opacity: 0.9;
+    }
+
+    /* Switch de idioma no portfolio */
+    .portfolio-language-switch {
+      position: relative;
+      width: 72px;
+      height: 36px;
+      background: #FF0035;
+      border-radius: 36px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+      box-shadow: 
+        0 3px 12px rgba(255, 0, 53, 0.4),
+        0 1px 4px rgba(255, 0, 53, 0.3),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin: 0 2px;
+    }
+
+    .portfolio-language-switch::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, 
+        #FF0035 0%, 
+        #E00030 50%, 
+        #FF0035 100%);
+      border-radius: 36px;
+      z-index: 1;
+    }
+
+    /* Bandeiras no portfolio */
+    .portfolio-uk-flag,
+    .portfolio-br-flag {
+      position: absolute;
+      inset: 0;
+      border-radius: 36px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .portfolio-uk-flag::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #012169;
+      border-radius: 36px;
+    }
+
+    .portfolio-uk-flag::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: 
+        linear-gradient(90deg, 
+          transparent 0%, transparent 45%,
+          #FFFFFF 45%, #FFFFFF 55%,
+          transparent 55%, transparent 100%),
+        linear-gradient(0deg, 
+          transparent 0%, transparent 45%,
+          #FFFFFF 45%, #FFFFFF 55%,
+          transparent 55%, transparent 100%),
+        linear-gradient(45deg, 
+          transparent 0%, transparent 43%,
+          #FFFFFF 43%, #FFFFFF 47%,
+          transparent 47%, transparent 53%,
+          #FFFFFF 53%, #FFFFFF 57%,
+          transparent 57%, transparent 100%),
+        linear-gradient(-45deg, 
+          transparent 0%, transparent 43%,
+          #FFFFFF 43%, #FFFFFF 47%,
+          transparent 47%, transparent 53%,
+          #FFFFFF 53%, #FFFFFF 57%,
+          transparent 57%, transparent 100%),
+        linear-gradient(90deg, 
+          transparent 0%, transparent 47%,
+          #C8102E 47%, #C8102E 53%,
+          transparent 53%, transparent 100%),
+        linear-gradient(0deg, 
+          transparent 0%, transparent 47%,
+          #C8102E 47%, #C8102E 53%,
+          transparent 53%, transparent 100%),
+        linear-gradient(45deg, 
+          transparent 0%, transparent 45%,
+          #C8102E 45%, #C8102E 49%,
+          transparent 49%, transparent 51%,
+          #C8102E 51%, #C8102E 55%,
+          transparent 55%, transparent 100%),
+        linear-gradient(-45deg, 
+          transparent 0%, transparent 45%,
+          #C8102E 45%, #C8102E 49%,
+          transparent 49%, transparent 51%,
+          #C8102E 51%, #C8102E 55%,
+          transparent 55%, transparent 100%);
+      border-radius: 36px;
+    }
+
+    .portfolio-br-flag::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #009B3A;
+      border-radius: 36px;
+    }
+
+    .portfolio-br-flag::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56%;
+      height: 56%;
+      background: #FEDF00;
+      clip-path: polygon(
+        50% 0%,
+        100% 50%,
+        50% 100%,
+        0% 50%
+      );
+      z-index: 1;
+    }
+
+    .portfolio-br-flag .circle-blue {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      background: #002776;
+      border-radius: 50%;
+      z-index: 2;
+    }
+
+    .portfolio-br-flag .white-band {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 15px;
+      height: 1.5px;
+      background: #FFFFFF;
+      border-radius: 1px;
+      z-index: 3;
+    }
+
+    .portfolio-br-flag .star {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      background: #FFFFFF;
+      border-radius: 50%;
+      z-index: 4;
+    }
+
+    .portfolio-br-flag .star:nth-child(1) { top: 38%; left: 45%; }
+    .portfolio-br-flag .star:nth-child(2) { top: 42%; left: 52%; }
+    .portfolio-br-flag .star:nth-child(3) { top: 50%; left: 48%; }
+    .portfolio-br-flag .star:nth-child(4) { top: 58%; left: 44%; }
+    .portfolio-br-flag .star:nth-child(5) { top: 62%; left: 52%; }
+
+    /* Switch handle no portfolio */
+    .portfolio-switch-handle {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 28px;
+      height: 28px;
+      background: 
+        radial-gradient(circle at 30% 30%, 
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(230, 230, 230, 0.9) 30%,
+          rgba(210, 210, 210, 0.85) 100%),
+        linear-gradient(145deg, 
+          rgba(255, 255, 255, 0.9),
+          rgba(240, 240, 240, 0.8));
+      border-radius: 50%;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 
+        0 3px 8px rgba(0, 0, 0, 0.5),
+        0 1px 3px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(200, 200, 200, 0.5),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(200, 200, 200, 0.7);
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: background, border-color, box-shadow;
+    }
+
+    .portfolio-switch-handle::after {
+      content: "";
+      width: 4px;
+      height: 4px;
+      background: 
+        radial-gradient(circle at 30% 30%, 
+          rgba(180, 180, 180, 0.8),
+          rgba(140, 140, 140, 0.9));
+      border-radius: 50%;
+      box-shadow: 
+        inset 0 1px 1px rgba(0, 0, 0, 0.5),
+        0 1px 1px rgba(160, 160, 160, 0.4);
+    }
+
+    .portfolio-language-switch.active .portfolio-switch-handle {
+      left: calc(100% - 32px);
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+    }
+
+    /* Classes para mostrar bandeiras no portfolio */
+    .portfolio-language-switch.show-flag-uk .portfolio-uk-flag {
+      opacity: 1;
+    }
+
+    .portfolio-language-switch.show-flag-br .portfolio-br-flag {
+      opacity: 1;
+    }
+
+    .portfolio-language-switch.fade-to-red .portfolio-uk-flag,
+    .portfolio-language-switch.fade-to-red .portfolio-br-flag {
+      opacity: 0;
+    }
+
+    /* Animação de pulse para bandeiras no portfolio */
+    .portfolio-language-switch.show-flag-uk .portfolio-uk-flag,
+    .portfolio-language-switch.show-flag-br .portfolio-br-flag {
+      animation: flagPulse 0.8s ease-in-out;
+    }
+
+/* =========================
+   TELA DE CARREGAMENTO - TAMANHO RETANGULAR
+========================== */
+.loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    background-color: #ff001a;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1s ease;
+}
+
+.loading-logo {
+    width: 120px !important; /* Largura aumentada */
+    height: 67.5px !important; /* Altura proporcional (120 * 9/16) */
+    max-width: 150px !important;
+    min-width: 120px !important;
+    display: block;
+    position: relative;
+    z-index: 10000;
+    margin: auto !important;
+    object-fit: contain;
+    border-radius: 2px;
+}
+
+/* Removendo completamente qualquer brilho ou sombra */
+.loading-logo {
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Se quiser uma animação muito simples apenas de opacidade */
+.loading-logo {
+    animation: subtleFade 2s infinite ease-in-out;
+}
+
+@keyframes subtleFade {
+    0%, 100% {
+        opacity: 0.9;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 1200px) {
+  .final-center-image {
+    top: 49%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 1024px) {
+  .final-center-image {
+    top: 54%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 768px) {
+
+    /* ===== TEXTO NOME ===== */
+  .name-alvaro-container {
+    left: 30% !important;
+    transform: translateX(-50%);
+    text-align: center;
+    align-items: center;
+  }
+
+  /* ===== DESCRIÇÃO ===== */
+  .description-container {
+    left: 19% !important;
+    transform: translateX(-50%);
+    text-align: center;
+    max-width: 90%;
+    text-align: center;        /* centraliza o texto */
+  }
+
+    .description-text {
+    text-align: center;       /* garante alinhamento linha a linha */
+    margin: 0 auto;
+  }
+
+  /* ===== MÁSCARA DO NOME ===== */
+  .name-mask-container {
+    left: 30% !important;
+    transform: translateX(-50%);
+  }
+
+  /* ===== MÁSCARA DA DESCRIÇÃO ===== */
+  .description-mask-container {
+    left: 19% !important;
+    transform: translateX(-50%);
+  }
+
+  /* Garante alinhamento interno correto */
+  .name-mask-container .text-mask,
+  .description-mask-container .text-mask {
+    margin: 0 auto;
+  }
+
+    /* REMOVER IMAGENS NA TELA INICIAL */
+  .my-picture-editing,
+  .my-picture,
+  .svg-image,
+  .design-icon,
+  .brazil-icon-rotating {
+    display: none !important;
+  }
+  
+  /* PORTFOLIO (MENU) */
+  .portfolio-photo-blocks {
+    display: none; /* Remove as photos 01-04 */
+  }
+
+  .portfolio-menu {
+    left: 50%;
+    right: auto;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 24px; /* DIMINUI MUITO o texto "elevating..." (era 40px) */
+  }
+
+  .portfolio-contacts {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    bottom: 80px;
+  }
+
+  /* STACKS */
+  .stacks-bg {
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    text-align: center;
+    font-size: 80px;
+  }
+
+  .stacks-title {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 90%;
+  }
+
+  .stacks-title .line-1 {
+    font-size: 52px; /* AUMENTA MAIS "stack of..." (era 48px) */
+  }
+
+  .stacks-title .line-2 {
+    font-size: 68px; /* AUMENTA MAIS "stacks" (era 64px) */
+  }
+
+  .stacks-description {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 65%; /* AUMENTA O ESPAÇAMENTO (era 60%) - sobe um pouco mais */
+    width: 90%;
+    max-width: 90%;
+    font-size: 20px; /* AUMENTA MAIS a descrição (era 18px) */
+    text-align: center;
+  }
+
+  /* CONTAINER FINAL - Links menores */
+  .final-text-link {
+    font-size: 24px;
+  }
+
+  /* Aumentar e SUBIR a imagem mypicturefinal */
+  .final-center-image {
+    width: 120%;
+    max-width: 140%;
+    transform: translate(-50%, -60%) scale(1.2);
+    top: 61%;
+  }
+
+    #finalLine1Text,
+  #finalLine2Text,
+  #finalLine3Text,
+  #finalLine4Text,
+  #finalLine5Text {
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Palavras destacadas */
+  .final-line-word {
+    font-size: inherit !important;
+  }
+
+}
+
+@media (max-width: 736px) {
+
+    /* ===== TEXTO NOME ===== */
+  .name-alvaro-container,
+  .name-mask-container {
+    left: 27% !important;
+  }
+
+  /* ===== DESCRIÇÃO ===== */
+  .description-container,
+  .description-mask-container {
+    left: 15% !important;
+  }
+  /* ABAIXAR A IMAGEM MY-PICTURE-FINAL NA TELA 736px */
+  .final-center-image {
+    top: 62% !important; /* ABAIXADO: ainda mais que 768px */
+    transform: translate(-50%, -50%) scale(1.2) !important; /* MAIOR */
+    width: 130% !important; /* MAIS LARGA */
+    max-width: 145% !important;
+  }
+  
+  /* COMPENSAR COM TEXTO */
+  .final-center-text .line-1 {
+    font-size: 50px !important; /* SLIGHTLY SMALLER THAN 768px */
+  }
+  
+  .final-center-text .line-2 {
+    font-size: 64px !important; /* SLIGHTLY SMALLER THAN 768px */
+  }
+  
+  .final-center-text {
+    top: 35% !important; /* SLIGHTLY LOWER THAN 768px */
+  }
+  
+  /* AJUSTAR LINKS */
+  .final-text-link {
+    font-size: 26px !important; /* SLIGHTLY SMALLER THAN 768px */
+  }
+  
+  .final-text-link.whatsapp { 
+    top: 55% !important; /* AJUSTADO PARA IMAGEM MAIS BAIXA */
+  }
+  .final-text-link.instagram { 
+    top: 58.5% !important;
+  }
+  .final-text-link.telegram { 
+    top: 62% !important;
+  }
+  .final-text-link.gmail { 
+    top: 65.5% !important;
+  }
+  .final-text-link.github { 
+    top: 58.5% !important;
+  }
+  .final-text-link.linkedin { 
+    top: 62% !important;
+  }
+  .final-text-link.behance { 
+    top: 65.5% !important;
+  }
+  
+  /* AJUSTAR TÍTULOS */
+  .final-section-label {
+    font-size: 13px !important;
+  }
+  
+  .final-section-label.contacts {
+    top: 47% !important;
+  }
+  
+  .final-section-label.works {
+    top: 47% !important;
+  }
+  
+  /* AJUSTAR CARROSSEL INFERIOR */
+  .final-bottom-carousel {
+    bottom: 13% !important; /* MAIS PARA BAIXO QUE 768px */
+  }
+  
+  .final-carousel-track img {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  
+  /* AJUSTAR STACKS PARA 736px */
+  .stacks-bg {
+    font-size: 160px !important; /* REDUZIDO PARA 736px */
+  }
+  
+  .stacks-title .line-1 {
+    font-size: 50px !important; /* REDUZIDO */
+  }
+  
+  .stacks-title .line-2 {
+    font-size: 72px !important; /* REDUZIDO */
+  }
+  
+  .stacks-description {
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    top: 65% !important; /* MAIS PARA BAIXO */
+    width: 85% !important;
+    font-size: 22px !important; /* REDUZIDO */
+  }
+}
+
+@media (max-width: 480px) {
+
+  .description-container {
+    width: 320px;
+    left: calc(50% - 160px);
+  }
+
+  .description-text {
+    font-size: 12px;
+  }
+    /* ===== TÍTULO ===== */
+  .name-alvaro-container,
+  .name-mask-container {
+    left: 14% !important;
+  }
+
+  /* ===== DESCRIÇÃO ===== */
+  .description-container,
+  .description-mask-container {
+    left: 15% !important;
+    line-height: 1.3;
+  }
+  /* DIMINUIR NOME "GIOVANE SOUZA" */
+  .name-giovane {
+    font-size: 36px !important;
+    left: 30px !important;
+    top: 40px !important;
+  }
+  
+  .name-souza {
+    font-size: 18px !important;
+    left: 30px !important;
+    top: 75px !important;
+  }
+  
+  .name-container {
+    top: 40px !important;
+    left: 30px !important;
+    gap: 4px !important;
+  }
+  
+  /* DIMINUIR BOTÃO DE LINGUAGEM (TELA NORMAL) */
+  .language-switch-container {
+    top: 40px !important;
+    right: 60px !important; /* REDUZIDO: de 90px para 60px */
+    transform: scale(0.8) !important;
+  }
+  
+  .language-switch {
+    width: 60px !important;
+    height: 30px !important;
+  }
+  
+  .switch-handle {
+    width: 22px !important;
+    height: 22px !important;
+    top: 3px !important;
+    left: 3px !important;
+  }
+  
+  .language-label {
+    font-size: 9px !important;
+  }
+  
+  /* DIMINUIR ESPAÇAMENTO ENTRE MENU E BOTÃO DE LINGUAGEM */
+  .hamburger {
+    top: 40px !important;
+    right: 20px !important; /* MOVIDO: de 30px para 20px (mais para a direita) */
+    width: 46px !important;
+    height: 46px !important;
+  }
+  
+  .hamburger span {
+    width: 26px !important;
+    height: 2.5px !important;
+  }
+  
+  /* DIMINUIR IMAGEM "SOUZA" (LOGO NO CENTRO SUPERIOR) */
+  .souza-logo {
+    width: 100px !important; /* REDUZIDO: de 140px para 100px */
+    height: 50px !important; /* REDUZIDO: de 70px para 50px */
+    top: 50px !important; /* AJUSTADO: de 60px para 50px */
+  }
+  
+  /* BOTÃO DE LINGUAGEM E MENU NA TELA MENU (PORTFOLIO) */
+  .portfolio-language-container {
+    top: 40px !important;
+    right: 60px !important; /* REDUZIDO: de 90px para 60px (igual tela normal) */
+    transform: scale(0.8) !important;
+  }
+  
+  .portfolio-language-switch {
+    width: 60px !important;
+    height: 30px !important;
+  }
+  
+  .portfolio-switch-handle {
+    width: 22px !important;
+    height: 22px !important;
+    top: 3px !important;
+    left: 3px !important;
+  }
+  
+  .portfolio-language-label {
+    font-size: 9px !important;
+  }
+  
+  .portfolio-language-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    z-index: 5002 !important;
+  }
+  
+  /* MENU (HAMBURGER) NA TELA PORTFOLIO */
+  body.portfolio-active .hamburger {
+    top: 40px !important;
+    right: 20px !important; /* MOVIDO: de 30px para 20px (igual tela normal) */
+    width: 46px !important;
+    height: 46px !important;
+  }
+  
+  body.portfolio-active .hamburger span {
+    width: 26px !important;
+    height: 2.5px !important;
+  }
+  
+  /* AUMENTAR UM POUQUINHO O TEXTO DA TELA MENU (PORTFOLIO) */
+  .portfolio-menu {
+    font-size: 20px !important;
+    letter-spacing: 1px !important;
+    width: 90% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  
+  .portfolio-menu-item {
+    height: 40px !important;
+    font-size: 20px !important;
+  }
+  
+  .portfolio-social {
+    font-size: 14px !important;
+    gap: 20px !important;
+  }
+  
+  .portfolio-social-item {
+    height: 16px !important;
+  }
+  
+  /* DIMINUIR TEXTO "PERFORMANCE..." NA TELA DE CASES */
+  .carousel-text {
+    font-size: 20px !important;
+  }
+  
+  /* DIMINUIR AINDA MAIS TEXTO "WORK" E "CONTACTS" NO CONTAINER FINAL */
+  .final-section-label {
+    font-size: 7px !important;
+    letter-spacing: 0.3px !important;
+  }
+  
+  .final-section-label.contacts {
+    top: 44.5% !important;
+  }
+  
+  .final-section-label.works {
+    top: 44.5% !important;
+  }
+  
+  /* DIMINUIR AINDA MAIS OS LINKS E REDUZIR ESPAÇAMENTO ENTRE "WORK"/"CONTACTS" E OS LINKS */
+  .final-text-link {
+    font-size: 14px !important;
+    height: 22px !important;
+  }
+  
+  /* REDUZIR ESPAÇAMENTO ENTRE TÍTULOS E LINKS (links mais próximos dos títulos) */
+  .final-text-link.whatsapp { 
+    top: 55.5% !important;
+  }
+  .final-text-link.instagram { 
+    top: 59% !important;
+  }
+  .final-text-link.telegram { 
+    top: 62.5% !important;
+  }
+  .final-text-link.gmail { 
+    top: 66% !important;
+  }
+  .final-text-link.github { 
+    top: 59% !important;
+  }
+  .final-text-link.linkedin { 
+    top: 62.5% !important;
+  }
+  .final-text-link.behance { 
+    top: 66% !important;
+  }
+  
+  /* ABAIXAR A IMAGEM MY-PICTURE-FINAL */
+  .final-center-image {
+    top: 67% !important;
+    transform: translate(-50%, -50%) scale(1.1) !important;
+    width: 130% !important;
+    max-width: 150% !important;
+  }
+  
+  /* AUMENTAR TEXTO CENTRAL PARA COMPENSAR */
+  .final-center-text .line-1 {
+    font-size: 36px !important;
+  }
+  
+  .final-center-text .line-2 {
+    font-size: 48px !important;
+  }
+  
+  .final-center-text {
+    top: 35% !important;
+  }
+  
+  /* AJUSTAR CARROSSEL INFERIOR */
+  .final-carousel-track img {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+  }
+  
+  .final-bottom-carousel {
+    bottom: 15% !important;
+  }
+  
+  /* AJUSTAR COPYRIGHT */
+  .final-copyright {
+    font-size: 7px !important;
+    bottom: 5px !important;
+    left: 10px !important;
+  }
+  
+  /* AJUSTAR STACKS PARA TELAS PEQUENAS */
+  .stacks-bg {
+    font-size: 60px !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) rotate(-15deg) !important;
+  }
+  
+  .stacks-title {
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    text-align: center !important;
+    width: 95% !important;
+    top: 45% !important;
+  }
+  
+  .stacks-title .line-1 {
+    font-size: 32px !important;
+  }
+  
+  .stacks-title .line-2 {
+    font-size: 48px !important;
+  }
+  
+  .stacks-description {
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    top: 70% !important;
+    width: 90% !important;
+    font-size: 16px !important;
+    text-align: center !important;
+  }
+  
+  /* AJUSTAR CARROSSEL DE STACKS */
+  .stacks-carousel-track img {
+    height: 32px !important;
+  }
+  
+  .stacks-carousel-wrapper {
+    bottom: 60px !important;
+  }
+
+    #finalLine1Text,
+  #finalLine2Text,
+  #finalLine3Text,
+  #finalLine4Text,
+  #finalLine5Text {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Palavras destacadas */
+  .final-line-word {
+    font-size: inherit !important;
+  }
+
+}
+
+@media (max-width: 414px) {
+
+      /* ===== TÍTULO ===== */
+  .name-alvaro-container,
+  .name-mask-container {
+    left: 10% !important;
+  }
+
+  /* ===== DESCRIÇÃO ===== */
+  .description-container,
+  .description-mask-container {
+    left: 10% !important;
+    line-height: 1.3;
+  }
+
+  .final-center-image {
+    top: 73% !important;
+    transform: translate(-50%, -50%) scale(1.3) !important;
+    width: 150% !important;
+  }
+
+    .portfolio-social {
+    font-size: 9px !important;
+    gap: 8px !important;
+  }
+  
+    #finalLine1Text,
+  #finalLine2Text,
+  #finalLine3Text,
+  #finalLine4Text,
+  #finalLine5Text {
+    font-size: 1.3rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Palavras destacadas */
+  .final-line-word {
+    font-size: inherit !important;
+  }
+
+  
+}
+
+@media (max-width: 320px) {
+  .name-alvaro-giovane,
+  .name-alvaro-de {
+    font-size: 100px;
+  }
+
+  .name-alvaro-souza {
+    font-size: 85px;
+  }
+      /* ===== TÍTULO ===== */
+  .name-alvaro-container,
+  .name-mask-container {
+    left: 10% !important;
+  }
+
+  /* ===== DESCRIÇÃO ===== */
+  .description-container,
+  .description-mask-container {
+    left: 6% !important;
+    line-height: 1.3;
+  }
+  /* BOTÕES REDUZIDOS NA TELA NORMAL */
+  .language-switch-container {
+    top: 30px !important; /* SUBIU: de 35px para 30px */
+    right: 45px !important; /* REDUZIDO: de 50px para 45px */
+    transform: scale(0.65) !important; /* DIMINUÍDO: de 0.7 para 0.65 */
+  }
+  
+  .language-switch {
+    width: 48px !important; /* DIMINUÍDO: de 52px para 48px */
+    height: 24px !important; /* DIMINUÍDO: de 26px para 24px */
+  }
+  
+  .switch-handle {
+    width: 18px !important; /* DIMINUÍDO: de 20px para 18px */
+    height: 18px !important; /* DIMINUÍDO: de 20px para 18px */
+    top: 2px !important;
+    left: 2px !important;
+  }
+  
+  .language-label {
+    font-size: 7px !important; /* DIMINUÍDO: de 8px para 7px */
+  }
+  
+  /* BOTÃO DE MENU REDUZIDO NA TELA NORMAL */
+  .hamburger {
+    top: 30px !important; /* SUBIU: de 35px para 30px */
+    right: 10px !important; /* REDUZIDO: de 15px para 10px */
+    width: 36px !important; /* DIMINUÍDO: de 40px para 36px */
+    height: 36px !important; /* DIMINUÍDO: de 40px para 36px */
+  }
+  
+  .hamburger span {
+    width: 20px !important; /* DIMINUÍDO: de 22px para 20px */
+    height: 1.8px !important; /* DIMINUÍDO: de 2px para 1.8px */
+  }
+  
+  /* BOTÕES REDUZIDOS NA TELA DE MENU (PORTFOLIO) */
+  body.portfolio-active .language-switch-container {
+    top: 30px !important; /* MESMO QUE TELA NORMAL */
+    right: 45px !important; /* MESMO QUE TELA NORMAL */
+    transform: scale(0.65) !important; /* MESMO QUE TELA NORMAL */
+  }
+  
+  body.portfolio-active .portfolio-language-container {
+    top: 30px !important;
+    right: 45px !important;
+    transform: scale(0.65) !important;
+  }
+  
+  body.portfolio-active .portfolio-language-switch {
+    width: 48px !important;
+    height: 24px !important;
+  }
+  
+  body.portfolio-active .portfolio-switch-handle {
+    width: 18px !important;
+    height: 18px !important;
+    top: 2px !important;
+    left: 2px !important;
+  }
+  
+  body.portfolio-active .portfolio-language-label {
+    font-size: 7px !important;
+  }
+  
+  /* BOTÃO DE MENU REDUZIDO NA TELA DE MENU */
+  body.portfolio-active .hamburger {
+    top: 30px !important; /* MESMO QUE TELA NORMAL */
+    right: 10px !important; /* MESMO QUE TELA NORMAL */
+    width: 36px !important; /* MESMO QUE TELA NORMAL */
+    height: 36px !important; /* MESMO QUE TELA NORMAL */
+  }
+  
+  body.portfolio-active .hamburger span {
+    width: 20px !important; /* MESMO QUE TELA NORMAL */
+    height: 1.8px !important; /* MESMO QUE TELA NORMAL */
+  }
+  
+  /* MANTER OS AJUSTES ANTERIORES PARA CONTATOS NA TELA MENU */
+  .portfolio-contacts-title {
+    font-size: 8px !important;
+    letter-spacing: 0.6px !important;
+    margin-bottom: 4px !important;
+  }
+  
+  .portfolio-social {
+    font-size: 9px !important;
+    gap: 8px !important;
+  }
+  
+  .portfolio-social-item {
+    height: 10px !important;
+  }
+  
+  /* MANTER AJUSTES DE ESPAÇAMENTO ENTRE "WORK"/"CONTACTS" E LINKS */
+  .final-section-label.contacts {
+    top: 47% !important;
+  }
+  
+  .final-section-label.works {
+    top: 47% !important;
+  }
+  
+  .final-text-link.whatsapp { 
+    top: 58.5% !important;
+  }
+  .final-text-link.instagram { 
+    top: 61.2% !important;
+  }
+  .final-text-link.telegram { 
+    top: 63.9% !important;
+  }
+  .final-text-link.gmail { 
+    top: 66.6% !important;
+  }
+  .final-text-link.github { 
+    top: 61.2% !important;
+  }
+  .final-text-link.linkedin { 
+    top: 63.9% !important;
+  }
+  .final-text-link.behance { 
+    top: 66.6% !important;
+  }
+  
+  /* MANTER OUTROS AJUSTES */
+  .stacks-description {
+    font-size: 13px !important;
+    line-height: 1.3 !important;
+    top: 74% !important;
+    margin-top: -10px !important;
+  }
+  
+  .carousel-text {
+    font-size: 14px !important;
+  }
+  
+  .final-section-label {
+    font-size: 5.5px !important;
+  }
+  
+  .final-text-link {
+    font-size: 11px !important;
+    height: 18px !important;
+  }
+  
+  .final-center-image {
+    top: 70% !important;
+    transform: translate(-50%, -50%) scale(1.3) !important;
+    width: 150% !important;
+  }
+  
+  .final-center-text .line-1 {
+    font-size: 28px !important;
+  }
+  
+  .final-center-text .line-2 {
+    font-size: 36px !important;
+  }
+  
+  .final-center-text {
+    top: 32% !important;
+  }
+  
+  /* AJUSTAR NOME "GIOVANE SOUZA" PARA COMPENSAR BOTÕES MENORES */
+  .name-giovane {
+    font-size: 28px !important; /* DIMINUÍDO: de 30px para 28px */
+    left: 15px !important; /* MOVIDO: de 20px para 15px */
+    top: 30px !important; /* SUBIU: de 35px para 30px */
+  }
+  
+  .name-souza {
+    font-size: 14px !important; /* DIMINUÍDO: de 15px para 14px */
+    left: 15px !important; /* MOVIDO: de 20px para 15px */
+    top: 58px !important; /* SUBIU: de 65px para 58px */
+  }
+  
+  .name-container {
+    top: 30px !important; /* SUBIU: de 35px para 30px */
+    left: 15px !important; /* MOVIDO: de 20px para 15px */
+    gap: 2px !important; /* REDUZIDO: de 3px para 2px */
+  }
+  
+  /* AJUSTAR LOGO SOUZA PARA COMPENSAR */
+  .souza-logo {
+    width: 70px !important; /* DIMINUÍDO: de 80px para 70px */
+    height: 35px !important; /* DIMINUÍDO: de 40px para 35px */
+    top: 40px !important; /* SUBIU: de 45px para 40px */
+  }
+
+    #finalLine1Text,
+  #finalLine2Text,
+  #finalLine3Text,
+  #finalLine4Text,
+  #finalLine5Text {
+    font-size: 1rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  /* Palavras destacadas */
+  .final-line-word {
+    font-size: inherit !important;
+  }
+
+}

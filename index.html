@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giovane Souza</title>
+  <link rel="icon" href="img/IconSite.png" type="image/x-icon">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Definir as fontes personalizadas */
+    @font-face {
+      font-family: 'Pemage';
+      src: url('font/Pemage-Regular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Drogel';
+      src: url('font/Drogel-gwrY1.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'Sora';
+      src: url('font/Sora-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* NOVA FONTE MONDA */
+    @font-face {
+      font-family: 'Monda';
+      src: url('font/monda.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* NOVA FONTE GC EPIC PRO */
+    @font-face {
+      font-family: 'GC Epic Pro';
+      src: url('font/gc-epicpro.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* NOVAS FONTES PARA O STACKS */
+    @font-face {
+      font-family: 'Hendrigo';
+      src: url('font/Hendrigo.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: 'EpicPro';
+      src: url('font/gc-epicpro.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* NOVA FONTE ESTRELLA - TROCADA PELA HENDRIGO */
+    @font-face {
+      font-family: 'Estrella';
+      src: url('font/Estrella-Early.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* NOVAS FONTES PARA O CONTAINER FINAL */
+    @font-face {
+      font-family: 'GCEpicPro';
+      src: url('font/gc-epicpro.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "EpicPro";
+      src: url("font/gc-epicpro.otf") format("opentype");
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      /* Aumentado para acomodar o novo texto e container final */
+      height: 600vh;
+      background: #000;
+      font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      overflow-x: hidden;
+      /* REMOVER BARRA DE SCROLL HORIZONTAL */
+      overflow-y: auto;
+      /* ESCONDER BARRA DE SCROLL VERTICAL */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- VÍDEO PRETO DE FUNDO FIXO -->
+  <video class="background-black" src="img/backgroundBlack.mp4" autoplay muted loop playsinline></video>
+  
+  <!-- VÍDEO BRANCO DE FUNDO PARA TRANSICAO DO CARROSSEL -->
+  <video class="background-white" src="img/backgroundWhite.mp4" autoplay muted loop playsinline></video>
+
+  <!-- NOVO: FUNDO CREME PARA O STACKS -->
+  <div class="background-creme"></div>
+
+  <!-- NOVO: FUNDO GRADIENTE PARA O CONTAINER FINAL - AGORA VERTICAL -->
+  <div class="background-gradient"></div>
+
+  <!-- IMAGEM SOUZA NO CENTRO SUPERIOR COM TEXTO (APARECE QUANDO CONTAINER ESTÁ NO ESTADO FINAL) -->
+  <div class="souza-logo-final-container" id="souzaLogoFinalContainer">
+    <div class="souza-logo-final">
+      <img src="img/souza.png" alt="Souza Logo">
+    </div>
+    <div class="made-by-text" id="madeByText">made by giovane souza</div>
+  </div>
+
+  <div class="stage">
+    <div class="ratio-box" id="zoomBox">
+      <!-- VÍDEO BRANCO EXISTENTE -->
+      <video src="img/backgroundWhite.mp4" autoplay muted loop playsinline></video>
+
+      <!-- Nova imagem MyPicture.png -->
+      <img class="my-picture" src="img/MyPicture.png" alt="My Picture">
+
+      <!-- NOVA CAMADA PARA MÁSCARA DE DESFOQUE -->
+      <div class="reveal-mask"></div>
+
+      <!-- Nova imagem MyPictureEditing.png em cima da MyPicture -->
+      <img class="my-picture-editing" src="img/MyPictureEditing.png" alt="My Picture Editing">
+
+      <canvas id="canvas" width="1920" height="1080"></canvas>
+
+      <!-- Imagem Souza.png no centro superior (DENTRO DO CONTAINER) -->
+      <div class="souza-logo">
+        <img src="img/souza.png" alt="Souza Logo">
+      </div>
+
+      <!-- Contêiner para as imagens no canto inferior esquerdo -->
+      <div class="images-container">
+        <!-- Imagem Svg.png no canto inferior esquerdo -->
+        <div class="svg-image">
+          <!-- Imagem do Brasil girando horizontalmente -->
+          <div class="brazil-icon-rotating">
+            <img src="img/IconeBrasil.png" alt="Ícone Brasil">
+          </div>
+          
+          <img src="img/Svg.png" alt="SVG Image">
+          <!-- Ícone de design posicionado sobre a imagem SVG -->
+          <div class="design-icon">
+            <img src="img/IconeDesing.png" alt="Design Icon">
+          </div>
+        </div>
+      </div>
+
+      <div class="safe-area"></div>
+    </div>
+  </div>
+
+  <!-- Nome GIOVANE SOUZA - MOVIDO PARA FORA DO STAGE (FIXO) -->
+  <div class="name-container">
+    <div class="name-giovane">GIOVANE</div>
+    <div class="name-souza">SOUZA</div>
+  </div>
+
+  <!-- Container do switch de idioma - FIXO -->
+  <div class="language-switch-container">
+    <span class="language-label en">EN</span>
+    
+    <div class="language-switch" id="languageSwitch">
+      <!-- Bandeira do Reino Unido -->
+      <div class="uk-flag"></div>
+      
+      <!-- Bandeira do Brasil -->
+      <div class="br-flag">
+        <div class="circle-blue"></div>
+        <div class="white-band"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+      </div>
+      
+      <!-- Círculo deslizante -->
+      <div class="switch-handle"></div>
+    </div>
+    
+    <span class="language-label pt">PT</span>
+  </div>
+
+  <!-- Menu hamburguer - FIXO -->
+  <div class="hamburger" id="hamburgerMenu">
+    <span></span>
+    <span></span>
+  </div>
+
+  <!-- NOVO: Container do switch de idioma para o portfolio (inicialmente oculto) -->
+  <div class="portfolio-language-container" id="portfolioLanguageContainer" style="display: none;">
+    <span class="portfolio-language-label en">EN</span>
+    
+    <div class="portfolio-language-switch" id="portfolioLanguageSwitch">
+      <!-- Bandeira do Reino Unido -->
+      <div class="portfolio-uk-flag"></div>
+      
+      <!-- Bandeira do Brasil -->
+      <div class="portfolio-br-flag">
+        <div class="circle-blue"></div>
+        <div class="white-band"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+        <div class="star"></div>
+      </div>
+      
+      <!-- Círculo deslizante -->
+      <div class="portfolio-switch-handle"></div>
+    </div>
+    
+    <span class="portfolio-language-label pt">PT</span>
+  </div>
+
+  <!-- Contêineres para as máscaras de revelação -->
+  <div class="name-mask-container" id="nameMaskContainer">
+    <div class="text-mask" id="nameTextMask"></div>
+  </div>
+
+  <div class="description-mask-container" id="descriptionMaskContainer">
+    <div class="text-mask" id="descriptionTextMask"></div>
+  </div>
+
+  <!-- Texto GIOVANE ALVARO DE SOUZA - aparece quando container está no estado final -->
+  <div class="name-alvaro-container" id="nameAlvaroContainer">
+    <div class="name-alvaro-giovane">GIOVANE</div>
+    <div class="name-alvaro-de">ALVARO DE</div>
+    <div class="name-alvaro-souza">SOUZA</div>
+  </div>
+
+  <!-- Descrição profissional - aparece quando container está no estado final -->
+  <div class="description-container" id="descriptionContainer">
+    <div class="description-text">Creative marketing and design professional,
+born on December 28, 2007, in Porto Ferreira, São Paulo, Brazil.
+
+Graduated in Multimedia from SENAI and currently studying
+Machine Learning at Cruzeiro do Sul University.
+
+Over 2 years of experience in creative production, logo design,
+and social media management.</div>
+  </div>
+
+  <!-- NOVO TEXTO FINAL QUE APARECE APÓS O PARALLAX COM MÁSCARAS INDIVIDUAIS -->
+  <div class="final-text-container" id="finalTextContainer">
+    <!-- Linha 1 -->
+    <div class="final-line-container" id="finalLine1Container">
+      <div class="final-line-text" id="finalLine1Text">
+        <span class="final-line-word" id="finalLine1Word1">ELEVANDO</span> PADRÕES,
+      </div>
+    </div>
+    
+    <!-- Linha 2 -->
+    <div class="final-line-container" id="finalLine2Container">
+      <div class="final-line-text" id="finalLine2Text">
+        ESCALANDO MARCAS,
+      </div>
+    </div>
+    
+    <!-- Linha 3 -->
+    <div class="final-line-container" id="finalLine3Container">
+      <div class="final-line-text" id="finalLine3Text">
+        <span class="final-line-word" id="finalLine3Word1">INTEGRANDO</span> MARKETING E IA,
+      </div>
+    </div>
+    
+    <!-- Linha 4 -->
+    <div class="final-line-container" id="finalLine4Container">
+      <div class="final-line-text" id="finalLine4Text">
+        CONTROLANDO ATENÇÃO,
+      </div>
+    </div>
+    
+    <!-- Linha 5 -->
+    <div class="final-line-container" id="finalLine5Container">
+      <div class="final-line-text" id="finalLine5Text">
+        CRIANDO <span class="final-line-word" id="finalLine5Word1">LEGADO</span> DIGITAL.
+      </div>
+    </div>
+  </div>
+
+  <!-- Contêiner principal para as máscaras do texto final -->
+  <div class="final-masks-container" id="finalMasksContainer">
+    <!-- Máscara para linha 1 -->
+    <div class="final-line-container">
+      <div class="final-line-mask" id="finalLine1Mask"></div>
+    </div>
+    
+    <!-- Máscara para linha 2 -->
+    <div class="final-line-container">
+      <div class="final-line-mask" id="finalLine2Mask"></div>
+    </div>
+    
+    <!-- Máscara para linha 3 -->
+    <div class="final-line-container">
+      <div class="final-line-mask" id="finalLine3Mask"></div>
+    </div>
+    
+    <!-- Máscara para linha 4 -->
+    <div class="final-line-container">
+      <div class="final-line-mask" id="finalLine4Mask"></div>
+    </div>
+    
+    <!-- Máscara para linha 5 -->
+    <div class="final-line-container">
+      <div class="final-line-mask" id="finalLine5Mask"></div>
+    </div>
+  </div>
+
+  <!-- NOVO: CARROSSEL DE CASES -->
+  <div class="carousel-container" id="carouselContainer">
+    <div class="carousel-scene">
+      <div class="carousel-canvas-wrapper" id="carouselCanvasWrapper">
+        <canvas id="carouselCanvas" width="1920" height="1080"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOVO: CONTAINER DO STACKS (APARECE APÓS O CARROSSEL DE CASES) -->
+  <div class="stacks-container" id="stacksContainer">
+    <div class="stacks-canvas">
+      <div class="stacks-title">
+        <div class="line-1">STACK DE</div>
+        <div class="line-2">CRIAÇÃO & IA</div>
+      </div>
+
+      <div class="stacks-description">
+        Ferramentas estratégicas para criar,<br>
+        escalar marcas e maximizar performance<br>
+        com marketing e inteligência artificial.
+      </div>
+
+      <!-- CARROSSEL DO STACKS -->
+      <div class="stacks-carousel-wrapper">
+        <div class="stacks-carousel-track">
+          <!-- lista duplicada para loop infinito -->
+          <img src="img/Photoshop.png">
+          <img src="img/Illustrator.png">
+          <img src="img/Lightroom.png">
+          <img src="img/Premiere.png">
+          <img src="img/After Effects.png">
+          <img src="img/Figma.png">
+          <img src="img/Visual Studio.png">
+          <img src="img/Js.png">
+          <img src="img/Canva.png">
+          <img src="img/Chat GPT.png">
+          <img src="img/Veo 3.png">
+          <img src="img/Deepseek.png">
+
+          <img src="img/Photoshop.png">
+          <img src="img/Illustrator.png">
+          <img src="img/Lightroom.png">
+          <img src="img/Premiere.png">
+          <img src="img/After Effects.png">
+          <img src="img/Figma.png">
+          <img src="img/Visual Studio.png">
+          <img src="img/Js.png">
+          <img src="img/Canva.png">
+          <img src="img/Chat GPT.png">
+          <img src="img/Veo 3.png">
+          <img src="img/Deepseek.png">
+        </div>
+      </div>
+
+      <div class="stacks-bg">Stacks</div>
+    </div>
+  </div>
+
+  <!-- NOVO: CONTAINER FINAL (APÓS O STACKS) COM ANIMAÇÃO DE BAIXO PARA CIMA -->
+  <div class="final-container" id="finalContainer">
+    <div class="final-main-container">
+      <!-- FORMA PRETA - ATRÁS DE TUDO -->
+      <div class="final-black-form"></div>
+      
+      <!-- Canvas para o fundo (TRANSPARENTE) -->
+      <canvas id="finalCanvasBg" class="final-canvas-bg" width="1920" height="1080"></canvas>
+      
+      <!-- Imagem central 1920x1080 - ATRÁS dos textos (z-index: 15) -->
+      <img class="final-center-image" src="img/MyPictureFinal.png" alt="My Picture">
+      
+      <!-- Canvas para textos interativos - NA FRENTE da imagem (z-index: 25) -->
+      <canvas id="finalCanvasText" class="final-canvas-text" width="1920" height="1080"></canvas>
+
+      <!-- NOVO: TEXTO CENTRAL -->
+      <div class="final-center-text" id="finalCenterText">
+        <div class="line-1" id="finalCenterLine1">PERFORMANCE IS</div>
+        <div class="line-2" id="finalCenterLine2">OUR PRIORITY</div>
+      </div>
+
+      <!-- NOVO: TEXTO PEQUENO ACIMA DOS CONTATOS -->
+      <div class="final-section-label contacts" id="finalContactsLabel">CONTACTS</div>
+      
+      <!-- NOVO: TEXTO PEQUENO ACIMA DOS TRABALHOS -->
+      <div class="final-section-label works" id="finalWorksLabel">WORKS</div>
+
+      <!-- NOVO: LINKS CLICÁVEIS PARA OS TEXTOS (MODIFICADO PARA EFEITO DE HOVER DUPLICADO) -->
+      <a href="https://wa.me/qr/YIVEWK7MXF3YD1" class="final-text-link whatsapp" target="_blank" rel="noopener noreferrer" data-text="WHATSAPP">
+        <span>WHATSAPP</span>
+      </a>
+      <a href="https://www.instagram.com/zsouzax?igsh=MWEzMnp0MTNsMnA4ZQ==" class="final-text-link instagram" target="_blank" rel="noopener noreferrer" data-text="INSTAGRAM">
+        <span>INSTAGRAM</span>
+      </a>
+      <a href="https://t.me/zsouzaxx" class="final-text-link telegram" target="_blank" rel="noopener noreferrer" data-text="TELEGRAM">
+        <span>TELEGRAM</span>
+      </a>
+      <a href="mailto:zgiovanesouzaz@gmail.com" class="final-text-link gmail" target="_blank" rel="noopener noreferrer" data-text="GMAIL">
+        <span>GMAIL</span>
+      </a>
+      <a href="https://github.com/zsouzax" class="final-text-link github" target="_blank" rel="noopener noreferrer" data-text="GITHUB">
+        <span>GITHUB</span>
+      </a>
+      <a href="https://www.linkedin.com/in/giovane-souza-5b2293363?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="final-text-link linkedin" target="_blank" rel="noopener noreferrer" data-text="LINKEDIN">
+        <span>LINKEDIN</span>
+      </a>
+      <a href="https://www.behance.net/giovanedesouza2" class="final-text-link behance" target="_blank" rel="noopener noreferrer" data-text="BEHANCE">
+        <span>BEHANCE</span>
+      </a>
+
+      <!-- Copyright no canto esquerdo - NA FRENTE de tudo -->
+      <div class="final-copyright">
+        <span class="final-copyright-bold">© 2026 Giovane Souza.</span> All rights reserved.
+      </div>
+
+      <!-- Imagens para o carrossel do canvas (ocultas) -->
+      <img id="finalWhatsapp" class="final-carousel-img" src="img/Whatsapp.png" alt="WhatsApp">
+      <img id="finalInstagram" class="final-carousel-img" src="img/Instagram.png" alt="Instagram">
+      <img id="finalTelegram" class="final-carousel-img" src="img/Telegram.png" alt="Telegram">
+      <img id="finalGmail" class="final-carousel-img" src="img/Gmail.png" alt="Gmail">
+      <img id="finalGithub" class="final-carousel-img" src="img/Github.png" alt="GitHub">
+      <img id="finalLinkedin" class="final-carousel-img" src="img/Linkedin.png" alt="LinkedIn">
+      <img id="finalBehance" class="final-carousel-img" src="img/Behance.png" alt="Behance">
+
+      <!-- Carrossel inferior - ATRÁS da imagem -->
+      <div class="final-bottom-carousel">
+        <div class="final-carousel-container">
+          <div class="final-carousel-track" id="finalInfiniteCarousel">
+            <!-- Imagens serão adicionadas via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOVO: CONTAINER DO PORTFOLIO (TELA DO MENU) -->
+  <div class="portfolio-container" id="portfolioContainer">
+    <div class="portfolio-canvas-wrapper">
+      <video autoplay muted loop playsinline>
+        <source src="img/backgroundBlack.mp4" type="video/mp4">
+      </video>
+
+      <!-- FOTOS -->
+      <div class="portfolio-photo-blocks">
+        <div class="portfolio-block-column left">
+          <img src="img/Photo01.jpg" class="portfolio-photo">
+          <img src="img/Photo02.jpg" class="portfolio-photo">
+        </div>
+
+        <div class="portfolio-block-column right">
+          <img src="img/Photo03.jpg" class="portfolio-photo">
+          <img src="img/Photo04.jpg" class="portfolio-photo">
+        </div>
+      </div>
+
+      <!-- MENU -->
+      <div class="portfolio-menu">
+        <a href="#" class="portfolio-menu-item portfolio" data-text="PORTFOLIO" target="_blank" rel="noopener noreferrer">
+          <span>PORTFOLIO</span>
+        </a>
+        <a href="https://github.com/zsouzax" class="portfolio-menu-item" data-text="GITHUB" target="_blank" rel="noopener noreferrer">
+          <span>GITHUB</span>
+        </a>
+        <a href="https://www.linkedin.com/in/giovane-souza-5b2293363?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="portfolio-menu-item" data-text="LINKEDIN" target="_blank" rel="noopener noreferrer">
+          <span>LINKEDIN</span>
+        </a>
+        <a href="https://www.behance.net/giovanedesouza2" class="portfolio-menu-item" data-text="BEHANCE" target="_blank" rel="noopener noreferrer">
+          <span>BEHANCE</span>
+        </a>
+      </div>
+
+      <!-- CONTATOS -->
+      <div class="portfolio-contacts">
+        <div class="portfolio-contacts-title">CONTATOS</div>
+        <div class="portfolio-social">
+          <a href="https://wa.me/qr/YIVEWK7MXF3YD1" class="portfolio-social-item" data-text="WHATSAPP" target="_blank" rel="noopener noreferrer">
+            <span>WHATSAPP</span>
+          </a>
+          <a href="https://www.instagram.com/zsouzax?igsh=MWEzMnp0MTNsMnA4ZQ==" class="portfolio-social-item" data-text="INSTAGRAM" target="_blank" rel="noopener noreferrer">
+            <span>INSTAGRAM</span>
+          </a>
+          <a href="https://t.me/zsouzaxx" class="portfolio-social-item" data-text="TELEGRAM" target="_blank" rel="noopener noreferrer">
+            <span>TELEGRAM</span>
+          </a>
+          <a href="mailto:zgiovanesouzaz@gmail.com" class="portfolio-social-item" data-text="GMAIL" target="_blank" rel="noopener noreferrer">
+            <span>GMAIL</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA DE CARREGAMENTO -->
+<div class="loading-screen" id="loadingScreen">
+  <video class="loading-logo" autoplay muted playsinline>
+    <source src="img/AnimationLogoSouza.mp4" type="video/mp4">
+    Seu navegador não suporta o vídeo.
+  </video>
+</div>
+
+  <script src="js/script.js"></script>
+</body>
+</body>
+</html>
