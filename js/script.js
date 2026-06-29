@@ -187,14 +187,11 @@ const STACKS_TRIGGER_MOBILE = 0.40; // Aparece mais cedo no mobile
 // Textos para tradução
 const texts = {
   en: {
-    description: `Creative marketing and design professional,
-born on December 28, 2007, in Porto Ferreira, São Paulo, Brazil.
+    description: `Creative Designer focused on branding, visual identity, UI/UX, and digital experiences, based in Porto Ferreira, São Paulo, Brazil.
 
-Graduated in Multimedia from SENAI and currently studying
-Machine Learning at Cruzeiro do Sul University.
+Currently working as a Graphic Designer at FW2 Propaganda while pursuing a degree in Artificial Intelligence at Cruzeiro do Sul University.
 
-Over 2 years of experience in creative production, logo design,
-and social media management.`,
+Combining design, technology, and AI to create impactful visual solutions, with experience in branding, social media, web design, motion graphics, and creative development.`,
     madeBy: 'made by giovane souza',
     casesText: 'CASES',
     projectsText: '& PROJECTS',
@@ -217,14 +214,11 @@ and social media management.`,
     portfolioContacts: "CONTACTS"
   },
   pt: {
-    description: `Profissional criativo de marketing e design,
-nascido em 28/12/2007 em Porto Ferreira – SP.
+    description: `Designer Criativo especializado em branding, identidade visual, UI/UX e experiências digitais, localizado em Porto Ferreira, São Paulo, Brasil.
 
-Formado em Multimídia pelo SENAI e em
-formação em Machine Learning (Cruzeiro do Sul).
+Atualmente atuando como Designer Gráfico na FW2 Propaganda e cursando graduação em Inteligência Artificial na Universidade Cruzeiro do Sul.
 
-Mais de 2 anos de experiência com criativos,
-logos e gestão de redes sociais.`,
+Combinando design, tecnologia e IA para criar soluções visuais de impacto, com experiência em branding, redes sociais, web design, motion graphics e desenvolvimento criativo.`,
     madeBy: 'criado por giovane souza',
     casesText: 'CASES',
     projectsText: '& PROJETOS',
@@ -557,7 +551,7 @@ const DESKTOP_MARGIN_Y = 500;
 
 // Primeiro retângulo - posicionado mais à esquerda do centro
 const DESKTOP_RECT_WIDTH = 400;
-const DESKTOP_RECT_HEIGHT = DESKTOP_RECT_WIDTH * (4 / 5);
+const DESKTOP_RECT_HEIGHT = DESKTOP_RECT_WIDTH * (5 / 4);
 const DESKTOP_RECT_X = DESKTOP_CENTER_X - 700;
 
 // Segundo retângulo - mais centralizado
@@ -702,12 +696,12 @@ const carouselMediaElements = {
   img7: new Image()
 };
 
-carouselMediaElements.img1.src = 'img/SCRM.jpg';
-carouselMediaElements.img2.src = 'img/ReelGTB.jpg';
-carouselMediaElements.img3.src = 'img/GTB.jpg';
+carouselMediaElements.img1.src = 'img/Duplas.jpg';
+carouselMediaElements.img2.src = 'img/Tulha.jpg';
+carouselMediaElements.img3.src = 'img/Tetrum.png';
 carouselMediaElements.img4.src = 'img/01 - NVE.jpg';
-carouselMediaElements.img5.src = 'img/02 - NVE.jpg';
-carouselMediaElements.img6.src = 'img/DRPD.jpg';
+carouselMediaElements.img5.src = 'img/Moovia.png';
+carouselMediaElements.img6.src = 'img/Pluzie.jpg';
 carouselMediaElements.img7.src = 'img/DBZA.png';
 
 let carouselMediaLoaded = false;
@@ -1586,31 +1580,31 @@ function drawCarouselRectangleTexts() {
     // Posições FIXAS - sem cálculos dinâmicos
     let currentY = MOBILE_FIRST_IMAGE_Y - carouselVerticalOffset;
     
-    carouselCtx.fillText('@suacasarendemais.', MOBILE_CENTER_X, currentY + MOBILE_RECT_HEIGHT - 20);
+    carouselCtx.fillText('@duplas_industria.', MOBILE_CENTER_X, currentY + MOBILE_RECT_HEIGHT - 20);
     currentY += MOBILE_RECT_HEIGHT + MOBILE_SPACING;
     
-    carouselCtx.fillText('@guesttobuy.', MOBILE_CENTER_X, currentY + MOBILE_RECT2_HEIGHT - 20);
+    carouselCtx.fillText('@tulhabar_.', MOBILE_CENTER_X, currentY + MOBILE_RECT2_HEIGHT - 20);
     currentY += MOBILE_RECT2_HEIGHT + MOBILE_SPACING;
     
-    carouselCtx.fillText('@guesttobuy.', MOBILE_CENTER_X, currentY + MOBILE_RECT3_HEIGHT - 20);
+    carouselCtx.fillText('Tetrum.', MOBILE_CENTER_X, currentY + MOBILE_RECT3_HEIGHT - 20);
     currentY += MOBILE_RECT3_HEIGHT + MOBILE_SPACING;
     
     carouselCtx.fillText('@novaeletricapf', MOBILE_CENTER_X, currentY + MOBILE_SQUARE_SIZE - 20);
     currentY += MOBILE_SQUARE_SIZE + MOBILE_SPACING;
     
-    carouselCtx.fillText('@novaeletricapf', MOBILE_CENTER_X, currentY + MOBILE_RECT4_HEIGHT - 20);
+    carouselCtx.fillText('Moovia', MOBILE_CENTER_X, currentY + MOBILE_RECT4_HEIGHT - 20);
     currentY += MOBILE_RECT4_HEIGHT + MOBILE_SPACING;
     
-    carouselCtx.fillText('@respira.nao.pira.', MOBILE_CENTER_X, currentY + MOBILE_RECT5_HEIGHT - 20);
+    carouselCtx.fillText('@pluzieoficial.', MOBILE_CENTER_X, currentY + MOBILE_RECT5_HEIGHT - 20);
   } else {
     const scrollFactor = carouselScrollOffset;
     
-    carouselCtx.fillText('@suacasarendemais.', DESKTOP_RECT_X - scrollFactor, DESKTOP_MARGIN_Y + DESKTOP_TEXT_OFFSET_Y);
-    carouselCtx.fillText('@guesttobuy.', DESKTOP_RECT2_X - scrollFactor, DESKTOP_RECT2_Y + DESKTOP_TEXT_OFFSET_Y);
-    carouselCtx.fillText('@guesttobuy.', DESKTOP_RECT3_X - scrollFactor, DESKTOP_RECT3_Y + DESKTOP_TEXT_OFFSET_Y);
+    carouselCtx.fillText('@duplas_industria.', DESKTOP_RECT_X - scrollFactor, DESKTOP_MARGIN_Y + DESKTOP_TEXT_OFFSET_Y);
+    carouselCtx.fillText('@tulhabar_.', DESKTOP_RECT2_X - scrollFactor, DESKTOP_RECT2_Y + DESKTOP_TEXT_OFFSET_Y);
+    carouselCtx.fillText('@Tetrum.', DESKTOP_RECT3_X - scrollFactor, DESKTOP_RECT3_Y + DESKTOP_TEXT_OFFSET_Y);
     carouselCtx.fillText('@novaeletricapf', DESKTOP_SQUARE_X - scrollFactor, DESKTOP_SQUARE_Y + DESKTOP_TEXT_OFFSET_Y);
-    carouselCtx.fillText('@novaeletricapf', DESKTOP_RECT4_X - scrollFactor, DESKTOP_RECT4_Y + DESKTOP_TEXT_OFFSET_Y);
-    carouselCtx.fillText('@respira.nao.pira.', DESKTOP_RECT5_X - scrollFactor, DESKTOP_RECT5_Y + DESKTOP_TEXT_OFFSET_Y);
+    carouselCtx.fillText('Moovia', DESKTOP_RECT4_X - scrollFactor, DESKTOP_RECT4_Y + DESKTOP_TEXT_OFFSET_Y);
+    carouselCtx.fillText('@pluzieoficial.', DESKTOP_RECT5_X - scrollFactor, DESKTOP_RECT5_Y + DESKTOP_TEXT_OFFSET_Y);
   }
 }
 
