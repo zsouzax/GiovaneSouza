@@ -1,0 +1,8 @@
+Coloque aqui as imagens dos projetos (cases), uma pasta por projeto. Exemplo:
+
+  img/cases/projeto-01/capa.webp   <- capa do card (proporção 4:3 fica melhor)
+  img/cases/projeto-01/01.webp     <- imagens do pop-up
+  img/cases/projeto-01/02.webp
+
+Depois, em js/projects.js, preencha "cover" e "images" do projeto correspondente.
+Use nomes sem acento e sem espaço, e respeite maiúsculas/minúsculas.
